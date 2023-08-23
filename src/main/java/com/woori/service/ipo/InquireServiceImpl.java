@@ -24,12 +24,17 @@ public class InquireServiceImpl implements InquireService {
 
         return ipos.stream().map(ipo -> {
             return new InquireDto(
+            	ipo.getIpoId(),
+            	ipo.getCorpCode(),
+            	ipo.getCorpName(),
+            	ipo.getSbd(),
+            	ipo.getPymd(),
+            	ipo.getRefund(),
+            	ipo.getIpoDate(),
+                ipo.getSlprc(),
                 ipo.getCorpCls(),
-                ipo.getCorpName(),
-                ipo.getCapitalIncrease(),
-                ipo.getSbd(),
-                ipo.getRefund(),
-                ipo.getSlprc()
+                ipo.getStkcnt(),
+                ipo.getCapitalIncrease()
             );
         }).collect(Collectors.toList());
     }
