@@ -53,53 +53,53 @@ pipeline {
             }
         }
 
-        stage('Test & Build gradle'){
-            // agent{
-            //     docker {
-            //         image 'openjdk:11'
-            //         args '-v "$PWD":/app'
-            //         reuseNode true
-            //     }
-            // }
-            steps {
-                echo "build"
+        // stage('Test & Build gradle'){
+        //     // agent{
+        //     //     docker {
+        //     //         image 'openjdk:11'
+        //     //         args '-v "$PWD":/app'
+        //     //         reuseNode true
+        //     //     }
+        //     // }
+        //     steps {
+        //         echo "build"
                 
-                sh 'chmod +x ./gradlew'
-                sh './gradlew clean build -x test'
+        //         sh 'chmod +x ./gradlew'
+        //         sh './gradlew clean build -x test'
 
-                echo "test"
-                sh './gradlew test'
-            }
-            post{
-                success {
-                    echo 'success testing & building gradle project '
-                }
-                failure {
-                    error 'fail testing & building gradle project' // exit pipeline
-                }
-            }            
+        //         echo "test"
+        //         sh './gradlew test'
+        //     }
+        //     post{
+        //         success {
+        //             echo 'success testing & building gradle project '
+        //         }
+        //         failure {
+        //             error 'fail testing & building gradle project' // exit pipeline
+        //         }
+        //     }            
 
-        }         
-        stage('Build Docker Image'){
-            steps{
-                script{
-                    sh '''
-                    docker build --no-cache -t ${IMAGE_NAME}:${BUILD_NUMBER} .
-                    docker build -t ${IMAGE_NAME}:latest .
-                    docker tag $IMAGE_NAME:$BUILD_NUMBER $ECR_PATH/$IMAGE_NAME:$BUILD_NUMBER
-                    docker tag $IMAGE_NAME:latest $ECR_PATH/$IMAGE_NAME:latest
-                    '''
-                }
-            }
-            post{
-                success {
-                    echo 'success dockerizing project'
-                }
-                failure {
-                    error 'fail dockerizing project' // exit pipeline
-                }
-            }
-        }
+        // }         
+        // stage('Build Docker Image'){
+        //     steps{
+        //         script{
+        //             sh '''
+        //             docker build --no-cache -t ${IMAGE_NAME}:${BUILD_NUMBER} .
+        //             docker build -t ${IMAGE_NAME}:latest .
+        //             docker tag $IMAGE_NAME:$BUILD_NUMBER $ECR_PATH/$IMAGE_NAME:$BUILD_NUMBER
+        //             docker tag $IMAGE_NAME:latest $ECR_PATH/$IMAGE_NAME:latest
+        //             '''
+        //         }
+        //     }
+        //     post{
+        //         success {
+        //             echo 'success dockerizing project'
+        //         }
+        //         failure {
+        //             error 'fail dockerizing project' // exit pipeline
+        //         }
+        //     }
+        // }
         stage('Push to ECR') {
             steps {
                 script {
@@ -107,7 +107,7 @@ pipeline {
                     sh 'rm -f ~/.dockercfg ~/.docker/config.json || true'
 
                     docker.withRegistry("https://${ECR_PATH}", "ecr:${REGION}:${AWS_CREDENTIAL_NAME}") {
-                      docker.image("${IMAGE_NAME}:${BUILD_NUMBER}").push()
+                      //docker.image("${IMAGE_NAME}:${BUILD_NUMBER}").push()
                       docker.image("${IMAGE_NAME}:latest").push()
                     }
 
