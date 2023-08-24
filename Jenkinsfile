@@ -54,13 +54,13 @@ pipeline {
         }
 
         stage('Test & Build gradle'){
-            agent{
-                docker {
-                    image 'openjdk:11'
-                    args '-v "$PWD":/app'
-                    reuseNode true
-                }
-            }
+            // agent{
+            //     docker {
+            //         image 'openjdk:11'
+            //         args '-v "$PWD":/app'
+            //         reuseNode true
+            //     }
+            // }
             steps {
                 echo "build"
                 sh './gradlew clean build -x test'
