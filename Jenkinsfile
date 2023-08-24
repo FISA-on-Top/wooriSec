@@ -10,7 +10,7 @@ pipeline {
 
         AWS_CREDENTIAL_NAME = 'ECR-access'
         ECR_PATH = '038331013212.dkr.ecr.ap-northeast-2.amazonaws.com'
-        IMAGE_NAME = 'was'
+        IMAGE_NAME = 'nginx'
         REGION = 'ap-northeast-2'
 
         WEBSERVER_USERNAME = 'ubuntu'
