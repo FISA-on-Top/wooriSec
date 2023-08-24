@@ -27,7 +27,6 @@ pipeline {
             steps {
                 echo 'init stage'
                 deleteDir()
-                sh "docker system prune -f"
             }
             post {
                 success {
@@ -109,6 +108,9 @@ pipeline {
                       docker.image("${IMAGE_NAME}:${BUILD_NUMBER}").push()
                       docker.image("${IMAGE_NAME}:latest").push()
                     }
+
+                    docker.image("${IMAGE_NAME}:${BUILD_NUMBER}").rmi()
+                    docker.image("${IMAGE_NAME}:latest").rmi()
                 }
             }
             post {
