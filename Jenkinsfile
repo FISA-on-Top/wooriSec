@@ -1,6 +1,3 @@
-def PROJECT_NAME = 'backend'
-def DOCKER_IMAGE = 'myrepo/picky-app'  // DockerHub 또는 다른 저장소의 이미지 이름을 설정합니다.
-
 pipeline {
     agent any
 
@@ -20,8 +17,8 @@ pipeline {
         WEBSERVER_IP = '43.201.20.90' 
 
         SSH_PATH = '~/Private_key/DevWAS.pem'
-        WASERVER_USERNAME = 'ubuntu'
-        WASERVER_IP = '10.0.12.174' 
+        WASSERVER_USERNAME = 'ubuntu'
+        WASSERVER_IP = '10.0.12.174' 
         CONTAINER_NAME = 'was'
     }
 
@@ -56,84 +53,108 @@ pipeline {
             }
         }
 
-        // stage('Build Docker Image'){
-        //     when{
-        //         // Dockerfile에 대한 변경 사항이 있는 경우에만 실행
-        //         changeset "dockerfile"
-        //     }
-        //     steps{
-        //         script{
-        //             sh '''
-        //             docker build --no-cache -t ${IMAGE_NAME}:${BUILD_NUMBER} .
-        //             docker build -t ${IMAGE_NAME}:latest .
-        //             docker tag $IMAGE_NAME:$BUILD_NUMBER $ECR_PATH/$IMAGE_NAME:$BUILD_NUMBER
-        //             docker tag $IMAGE_NAME:latest $ECR_PATH/$IMAGE_NAME:latest
-        //             '''
-        //         }
-        //     }
-        //     post{
-        //         success {
-        //             echo 'success dockerizing project'
-        //         }
-        //         failure {
-        //             error 'fail dockerizing project' // exit pipeline
-        //         }
-        //     }
-        // }
-
-        // stage('Push to ECR') {
-        //     when{
-        //         // Dockerfile에 대한 변경 사항이 있는 경우에만 실행
-        //         changeset "dockerfile"
-        //     }
-        //     steps {
-        //         script {
-        //             // cleanup current user docker credentials
-        //             sh 'rm -f ~/.dockercfg ~/.docker/config.json || true'
-
-        //             docker.withRegistry("https://${ECR_PATH}", "ecr:${REGION}:${AWS_CREDENTIAL_NAME}") {
-        //               docker.image("${IMAGE_NAME}:${BUILD_NUMBER}").push()
-        //               docker.image("${IMAGE_NAME}:latest").push()
-        //             }
-        //         }
-        //     }
-        //     post {
-        //         success {
-        //             echo 'success upload image'
-        //         }
-        //         failure {
-        //             error 'fail upload image' // exit pipeline
-        //         }
-        //     }
-        // }
-
-        stage('Prepare') {
-            steps {
-                sh 'gradlew clean'
+        stage('Test & Build gradle') {
+            agent{
+                docker {
+                    image 'openjdk:11'
+                    args '-v "$PWD":/app'
+                    reuseNode true
+                }
             }
-        }             
-        stage('Build') {
             steps {
-                sh 'gradlew build -x test'
+                echo "build"
+                sh './gradlew clean build -x test'
+            }
+            post{
+                success {
+                    echo 'success building gradle project '
+                }
+                failure {
+                    error 'fail building gradle project' // exit pipeline
+                }
+            }
+             steps {
+                echo "test"
+                sh './gradlew test'
+            }
+            post{
+                success {
+                    echo 'success testing gradle project '
+                }
+                failure {
+                    error 'fail testing gradle project' // exit pipeline
+                }
+            }            
+
+        }         
+        stage('Build Docker Image'){
+            steps{
+                script{
+                    sh '''
+                    docker build --no-cache -t ${IMAGE_NAME}:${BUILD_NUMBER} .
+                    docker build -t ${IMAGE_NAME}:latest .
+                    docker tag $IMAGE_NAME:$BUILD_NUMBER $ECR_PATH/$IMAGE_NAME:$BUILD_NUMBER
+                    docker tag $IMAGE_NAME:latest $ECR_PATH/$IMAGE_NAME:latest
+                    '''
+                }
+            }
+            post{
+                success {
+                    echo 'success dockerizing project'
+                }
+                failure {
+                    error 'fail dockerizing project' // exit pipeline
+                }
+            }
+        }
+        stage('Push to ECR') {
+            steps {
+                script {
+                    // cleanup current user docker credentials
+                    sh 'rm -f ~/.dockercfg ~/.docker/config.json || true'
+
+                    docker.withRegistry("https://${ECR_PATH}", "ecr:${REGION}:${AWS_CREDENTIAL_NAME}") {
+                      docker.image("${IMAGE_NAME}:${BUILD_NUMBER}").push()
+                      docker.image("${IMAGE_NAME}:latest").push()
+                    }
+                }
+            }
+            post {
+                success {
+                    echo 'success upload image'
+                }
+                failure {
+                    error 'fail upload image' // exit pipeline
+                }
             }
         }
 
-        stage('Test') {
+        stage('Deploy to WAS server') {
             steps {
-                sh 'gradlew test'
-            }
-        }
+                sshagent(credentials:['devfront']) { 
 
-        stage('Deploy') {
-            steps {
-                sshagent(['my-ssh-credentials']) {  // 서버에 SSH 연결하기 위한 Jenkins credentials ID를 설정합니다.
                     sh """
-                        ssh -o StrictHostKeyChecking=no deploy@my-deployment-server "
-                            docker pull ${DOCKER_IMAGE}
-                            docker stop picky-app
-                            docker rm picky-app
-                            docker run -d --name picky-app -p 8080:8080 ${DOCKER_IMAGE}
-                        "
+                        ssh -o StrictHostKeyChecking=yes $WEBSERVER_USERNAME@$WEBSERVER_IP '
+
+                            ssh -i $SSH_PATH -o StrictHostKeyChecking=yes $WASSERVER_USERNAME@$WASSERVER_IP '
+                            
+                                # Login to ECR and pull the Docker image
+                                aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $ECR_PATH
+                                
+                                # Pull image from ECR to web server
+                                docker pull $ECR_PATH/$IMAGE_NAME:latest
+
+                                # Remove the existing container, if it exists
+                                if docker ps -a | grep $CONTAINER_NAME; then
+                                    docker rm -f $CONTAINER_NAME
+                                fi
+                               
+                                # Run a new Docker container using the image from ECR
+                                docker run -d \
+                                -p 3000:3000\
+                                --name $CONTAINER_NAME $ECR_PATH/$IMAGE_NAME:latest
+                            '
+                        '
                     """
                 }
             }
