@@ -27,6 +27,7 @@ pipeline {
             steps {
                 echo 'init stage'
                 deleteDir()
+                sh "docker system prune -f'
             }
             post {
                 success {
