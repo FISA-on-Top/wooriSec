@@ -6,7 +6,7 @@ pipeline {
 
         //REPOSITORY_CREDENTIAL_ID = 'gitlab-jenkins-key'
         REPOSITORY_URL = 'https://github.com/FISA-on-Top/wooriSec.git'
-        TARGET_BRANCH = 'main' 
+        TARGET_BRANCH = 'feature/#2' 
 
         AWS_CREDENTIAL_NAME = 'ECR-access'
         ECR_PATH = '038331013212.dkr.ecr.ap-northeast-2.amazonaws.com'
@@ -53,7 +53,7 @@ pipeline {
             }
         }
 
-        stage('Test & Build gradle') {
+        stage('Test & Build gradle'){
             agent{
                 docker {
                     image 'openjdk:11'
@@ -64,25 +64,16 @@ pipeline {
             steps {
                 echo "build"
                 sh './gradlew clean build -x test'
-            }
-            post{
-                success {
-                    echo 'success building gradle project '
-                }
-                failure {
-                    error 'fail building gradle project' // exit pipeline
-                }
-            }
-             steps {
+
                 echo "test"
                 sh './gradlew test'
             }
             post{
                 success {
-                    echo 'success testing gradle project '
+                    echo 'success testing & building gradle project '
                 }
                 failure {
-                    error 'fail testing gradle project' // exit pipeline
+                    error 'fail testing & building gradle project' // exit pipeline
                 }
             }            
 
