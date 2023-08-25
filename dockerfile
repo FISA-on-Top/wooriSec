@@ -1,7 +1,6 @@
 FROM openjdk:11
 
-COPY . /usr/src/myapp
+COPY ./build/libs/*.jar app.jar
 
-WORKDIR /usr/src/myapp
-
-ENTRYPOINT ["java", "-jar","backend.jar"]
+EXPOSE 3000
+ENTRYPOINT ["java", "-jar","app.jar"]
