@@ -15,6 +15,8 @@ public class InquireDto {
 	// 종목 조회
 	private Long ipoId;
 	private int corpcode;
+
+
 	private String corpName;	// 기업명
 	private Date sbd;
 	private Date pymd;
@@ -27,7 +29,6 @@ public class InquireDto {
 	
 	public InquireDto(Long ipoId, int corpcode, String corpName, Date sbd, Date pymd, Date refund, Date ipoDate,
 			BigDecimal slprc, String corpCls, Long stkcnt, String capitalIncrease) {
-		super();
 		this.ipoId = ipoId;
 		this.corpcode = corpcode;
 		this.corpName = corpName;
@@ -41,6 +42,4 @@ public class InquireDto {
 		this.capitalIncrease = capitalIncrease;
 	}
 
-
-	
 }

@@ -21,7 +21,7 @@ public class InquireServiceImpl implements InquireService {
     @Override
     public List<InquireDto> getAllIpoDetails() {
         List<Ipo> ipos = inquireRepository.findAll();
-
+   
         return ipos.stream().map(ipo -> {
             return new InquireDto(
             	ipo.getIpoId(),
