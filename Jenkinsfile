@@ -10,7 +10,7 @@ pipeline {
 
         AWS_CREDENTIAL_NAME = 'ECR-access'
         ECR_PATH = '038331013212.dkr.ecr.ap-northeast-2.amazonaws.com'
-        IMAGE_NAME = 'nginx'
+        IMAGE_NAME = 'was'
         REGION = 'ap-northeast-2'
 
         WEBSERVER_USERNAME = 'ubuntu'
@@ -53,53 +53,53 @@ pipeline {
             }
         }
 
-        // stage('Test & Build gradle'){
-        //     // agent{
-        //     //     docker {
-        //     //         image 'openjdk:11'
-        //     //         args '-v "$PWD":/app'
-        //     //         reuseNode true
-        //     //     }
-        //     // }
-        //     steps {
-        //         echo "build"
+        stage('Test & Build gradle'){
+            // agent{
+            //     docker {
+            //         image 'openjdk:11'
+            //         args '-v "$PWD":/app'
+            //         reuseNode true
+            //     }
+            // }
+            steps {
+                echo "build"
                 
-        //         sh 'chmod +x ./gradlew'
-        //         sh './gradlew clean build -x test'
+                sh 'chmod +x ./gradlew'
+                sh './gradlew clean build -x test'
 
-        //         echo "test"
-        //         sh './gradlew test'
-        //     }
-        //     post{
-        //         success {
-        //             echo 'success testing & building gradle project '
-        //         }
-        //         failure {
-        //             error 'fail testing & building gradle project' // exit pipeline
-        //         }
-        //     }            
+                echo "test"
+                sh './gradlew test'
+            }
+            post{
+                success {
+                    echo 'success testing & building gradle project '
+                }
+                failure {
+                    error 'fail testing & building gradle project' // exit pipeline
+                }
+            }            
 
-        // }         
-        // stage('Build Docker Image'){
-        //     steps{
-        //         script{
-        //             sh '''
-        //             docker build --no-cache -t ${IMAGE_NAME}:${BUILD_NUMBER} .
-        //             docker build -t ${IMAGE_NAME}:latest .
-        //             docker tag $IMAGE_NAME:$BUILD_NUMBER $ECR_PATH/$IMAGE_NAME:$BUILD_NUMBER
-        //             docker tag $IMAGE_NAME:latest $ECR_PATH/$IMAGE_NAME:latest
-        //             '''
-        //         }
-        //     }
-        //     post{
-        //         success {
-        //             echo 'success dockerizing project'
-        //         }
-        //         failure {
-        //             error 'fail dockerizing project' // exit pipeline
-        //         }
-        //     }
-        // }
+        }         
+        stage('Build Docker Image'){
+            steps{
+                script{
+                    sh '''
+                    docker build --no-cache -t ${IMAGE_NAME}:${BUILD_NUMBER} .
+                    docker build -t ${IMAGE_NAME}:latest .
+                    docker tag $IMAGE_NAME:$BUILD_NUMBER $ECR_PATH/$IMAGE_NAME:$BUILD_NUMBER
+                    docker tag $IMAGE_NAME:latest $ECR_PATH/$IMAGE_NAME:latest
+                    '''
+                }
+            }
+            post{
+                success {
+                    echo 'success dockerizing project'
+                }
+                failure {
+                    error 'fail dockerizing project' // exit pipeline
+                }
+            }
+        }
         stage('Push to ECR') {
             steps {
                 script {
