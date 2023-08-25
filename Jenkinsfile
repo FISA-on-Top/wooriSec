@@ -14,10 +14,7 @@ pipeline {
         IMAGE_NAME = 'was'
         REGION = 'ap-northeast-2'
 
-        WEBSERVER_USERNAME = 'ubuntu'
-        WEBSERVER_IP = '43.201.20.90' 
-
-        SSH_PATH = '~/Private_key/DevWAS.pem'
+        SSH_PATH = '~/ECS_Key/DevWAS.pem'
         WASSERVER_USERNAME = 'ubuntu'
         WASSERVER_IP = '10.0.12.174' 
         CONTAINER_NAME = 'was'
@@ -132,26 +129,23 @@ pipeline {
                 sshagent(credentials:['devfront']) { 
 
                     sh """
-                        ssh -t -o StrictHostKeyChecking=yes $WEBSERVER_USERNAME@$WEBSERVER_IP;
-
-                            ssh -t -i $SSH_PATH -o StrictHostKeyChecking=yes $WASSERVER_USERNAME@$WASSERVER_IP '
+                        ssh -t -i $SSH_PATH -o StrictHostKeyChecking=yes $WASSERVER_USERNAME@$WASSERVER_IP '
+                        
+                            # Login to ECR and pull the Docker image
+                            aws ecr get-login-password --region $REGION | docker login --username $ECR_NAME --password-stdin $ECR_PATH
                             
-                                # Login to ECR and pull the Docker image
-                                aws ecr get-login-password --region $REGION | docker login --username $ECR_NAME --password-stdin $ECR_PATH
-                                
-                                # Pull image from ECR to web server
-                                docker pull $ECR_PATH/$IMAGE_NAME:latest
+                            # Pull image from ECR to web server
+                            docker pull $ECR_PATH/$IMAGE_NAME:latest
 
-                                # Remove the existing container, if it exists
-                                if docker ps -a | grep $CONTAINER_NAME; then
-                                    docker rm -f $CONTAINER_NAME
-                                fi
-                               
-                                # Run a new Docker container using the image from ECR
-                                docker run -d \
-                                -p 3000:3000\
-                                --name $CONTAINER_NAME $ECR_PATH/$IMAGE_NAME:latest
-                            '
+                            # Remove the existing container, if it exists
+                            if docker ps -a | grep $CONTAINER_NAME; then
+                                docker rm -f $CONTAINER_NAME
+                            fi
+                            
+                            # Run a new Docker container using the image from ECR
+                            docker run -d \
+                            -p 3000:3000\
+                            --name $CONTAINER_NAME $ECR_PATH/$IMAGE_NAME:latest
                         '
                     """
                 }
