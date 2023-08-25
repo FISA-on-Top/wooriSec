@@ -1,12 +1,12 @@
 server:
-  port: 3000
+  port: 8080
 
     
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    password: rootroot
-    url: jdbc:mysql://devdb.ca5o3ouzfrpj.ap-northeast-2.rds.amazonaws.com/woori?characterEncoding=UTF-8
+    password: root
+    url: jdbc:mysql://localhost/woori?characterEncoding=UTF-8
     username: root
   jpa:
     database: mysql
