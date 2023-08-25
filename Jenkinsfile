@@ -107,9 +107,12 @@ pipeline {
                     sh 'rm -f ~/.dockercfg ~/.docker/config.json || true'
 
                     docker.withRegistry("https://${ECR_PATH}", "ecr:${REGION}:${AWS_CREDENTIAL_NAME}") {
-                      //docker.image("${IMAGE_NAME}:${BUILD_NUMBER}").push()
+                      docker.image("${IMAGE_NAME}:${BUILD_NUMBER}").push()
                       docker.image("${IMAGE_NAME}:latest").push()
                     }
+
+                    sh("docker rmi ${IMAGE_NAME}:${BUILD_NUMBER}")
+                    sh("docker rmi ${IMAGE_NAME}:latest")
 
                 }
             }
