@@ -14,7 +14,7 @@ pipeline {
         IMAGE_NAME = 'was'
         REGION = 'ap-northeast-2'
 
-        SSH_PATH = '~/ECS_Key/DevWAS.pem'
+        SSH_PATH = '/var/jenkins_home/.ssh/DevWAS.pem'
         WASSERVER_USERNAME = 'ubuntu'
         WASSERVER_IP = '10.0.12.174' 
         CONTAINER_NAME = 'was'
@@ -129,7 +129,7 @@ pipeline {
                 sshagent(credentials:['devfront']) { 
 
                     sh """
-                        ssh -t -i $SSH_PATH -o StrictHostKeyChecking=yes $WASSERVER_USERNAME@$WASSERVER_IP '
+                        ssh -t -i $SSH_PATH -o StrictHostKeyChecking=no $WASSERVER_USERNAME@$WASSERVER_IP '
                         
                             # Login to ECR and pull the Docker image
                             aws ecr get-login-password --region $REGION | docker login --username $ECR_NAME --password-stdin $ECR_PATH
