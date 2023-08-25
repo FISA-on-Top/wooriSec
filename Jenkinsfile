@@ -9,6 +9,7 @@ pipeline {
         TARGET_BRANCH = 'feature/#2' 
 
         AWS_CREDENTIAL_NAME = 'ECR-access'
+        ECR_NAME = 'AWS'
         ECR_PATH = '038331013212.dkr.ecr.ap-northeast-2.amazonaws.com'
         IMAGE_NAME = 'was'
         REGION = 'ap-northeast-2'
@@ -136,7 +137,7 @@ pipeline {
                             ssh -i $SSH_PATH -o StrictHostKeyChecking=yes $WASSERVER_USERNAME@$WASSERVER_IP '
                             
                                 # Login to ECR and pull the Docker image
-                                aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $ECR_PATH
+                                aws ecr get-login-password --region $REGION | docker login --username $ECR_NAME --password-stdin $ECR_PATH
                                 
                                 # Pull image from ECR to web server
                                 docker pull $ECR_PATH/$IMAGE_NAME:latest
