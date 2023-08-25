@@ -132,9 +132,9 @@ pipeline {
                 sshagent(credentials:['devfront']) { 
 
                     sh """
-                        ssh -o StrictHostKeyChecking=yes $WEBSERVER_USERNAME@$WEBSERVER_IP '
+                        ssh -t -o StrictHostKeyChecking=yes $WEBSERVER_USERNAME@$WEBSERVER_IP;
 
-                            ssh -i $SSH_PATH -o StrictHostKeyChecking=yes $WASSERVER_USERNAME@$WASSERVER_IP '
+                            ssh -t -i $SSH_PATH -o StrictHostKeyChecking=yes $WASSERVER_USERNAME@$WASSERVER_IP '
                             
                                 # Login to ECR and pull the Docker image
                                 aws ecr get-login-password --region $REGION | docker login --username $ECR_NAME --password-stdin $ECR_PATH
