@@ -71,8 +71,8 @@ pipeline {
                       docker.image("${IMAGE_NAME}:latest").push()
                     }
 
-                    sh("docker rmi -f ${IMAGE_NAME}:${IMAGE_VERSION}")
-                    sh("docker rmi -f ${IMAGE_NAME}:latest")
+                    sh("docker rmi -f ${ECR_PATH}/${IMAGE_NAME}:${IMAGE_VERSION}")
+                    sh("docker rmi -f ${ECR_PATH}/${IMAGE_NAME}:latest")
 
                 }
             }
