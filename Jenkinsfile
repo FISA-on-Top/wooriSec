@@ -6,6 +6,7 @@ pipeline {
         REPOSITORY_URL = 'https://github.com/FISA-on-Top/wooriSec.git'
         //TARGET_BRANCH = ''
 
+        AWS_CREDENTIAL_NAME = 'ECR-access'
         ECR_NAME = 'AWS'
         ECR_PATH = '038331013212.dkr.ecr.ap-northeast-2.amazonaws.com'
         IMAGE_NAME = 'was'
