@@ -13,7 +13,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     generate-ddl: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: true
     show-sql: true 
   mvc:
     view:
