@@ -6,12 +6,11 @@ pipeline {
         REPOSITORY_URL = 'https://github.com/FISA-on-Top/wooriSec.git'
         //TARGET_BRANCH = ''
 
-        AWS_CREDENTIAL_NAME = 'ECR-access'
         ECR_NAME = 'AWS'
         ECR_PATH = '038331013212.dkr.ecr.ap-northeast-2.amazonaws.com'
         IMAGE_NAME = 'was'
         IMAGE_VERSION = "0.${BUILD_NUMBER}"
-        REGION = 'ap-northeast-2'
+        AWS_REGION = 'ap-northeast-2'
 
         SSH_PATH = '/var/jenkins_home/.ssh/DevWAS.pem'
         WASSERVER_USERNAME = 'ubuntu'
@@ -106,9 +105,15 @@ pipeline {
                         
                             ls
 
+                            # AWS 자격증명을 설정합니다.
+                            export AWS_ACCESS_KEY_ID=\$(echo ${AWS_ACCESS_KEY_ID})
+                            export AWS_SECRET_ACCESS_KEY=\$(echo ${AWS_SECRET_ACCESS_KEY})
+                            export AWS_DEFAULT_REGION=\$(echo ${AWS_REGION})
+
                             # Login to ECR and pull the Docker image
                             echo "login into aws"
-                            aws ecr get-login-password --region $REGION | docker login --username $ECR_NAME --password-stdin $ECR_PATH
+                            # aws ecr get-login-password --region $REGION | docker login --username $ECR_NAME --password-stdin $ECR_PATH
+                            aws ecr get-login-password
                             
                             # Pull image from ECR to web server
                             echo "pull the image from ECR "
@@ -127,6 +132,9 @@ pipeline {
                             --name $CONTAINER_NAME $ECR_PATH/$IMAGE_NAME:latest
                         '
                     """
+                }
+                environment {
+                    AWS_CRED = credentials('ECR-access')
                 }
             }
             post{
