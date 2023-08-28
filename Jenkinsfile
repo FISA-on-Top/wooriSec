@@ -89,11 +89,11 @@ pipeline {
 
         stage('Pull and Deploy to WAS server') {
             when {
-                branch 'develop'
-                // anyOf {
-                //     branch 'feature/*'
-                //     branch 'develop'
-                // }
+                //branch 'develop'
+                anyOf {
+                    branch 'feature/*'
+                    branch 'develop'
+                }
             }            
             steps {
                 echo "Current branch is ${env.BRANCH_NAME}"
