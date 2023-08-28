@@ -125,8 +125,9 @@ pipeline {
                                 
                                 # Run a new Docker container using the image from ECR
                                 echo "docker run"
-                                docker run -d \
+                                docker run \
                                 -p 3000:3000\
+                                -v ~/was:/usr/src/app\
                                 --name $CONTAINER_NAME $ECR_PATH/$IMAGE_NAME:latest
                             '
                         """
