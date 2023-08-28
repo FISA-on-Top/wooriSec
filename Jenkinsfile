@@ -98,43 +98,36 @@ pipeline {
             steps {
                 echo "Current branch is ${env.BRANCH_NAME}"
 
-                sshagent(credentials:['devfront']) { 
+                withCredentials([usernamePassword(credentialsId: 'aws-docker-access', passwordVariable: 'ECR_PASSWORD', usernameVariable: 'ECR_USERNAME')]){
+                    sshagent(credentials:['devfront']) { 
 
-                    sh """
-                        ssh -t -i $SSH_PATH -o StrictHostKeyChecking=no $WASSERVER_USERNAME@$WASSERVER_IP '
-                        
-                            ls
-
-                            # AWS 자격증명을 설정합니다.
-                            export AWS_ACCESS_KEY_ID=\$(echo ${AWS_ACCESS_KEY_ID})
-                            export AWS_SECRET_ACCESS_KEY=\$(echo ${AWS_SECRET_ACCESS_KEY})
-                            export AWS_DEFAULT_REGION=\$(echo ${AWS_REGION})
-
-                            # Login to ECR and pull the Docker image
-                            echo "login into aws"
-                            # aws ecr get-login-password --region $REGION | docker login --username $ECR_NAME --password-stdin $ECR_PATH
-                            aws ecr get-login-password
+                        sh """
+                            ssh -t -i $SSH_PATH -o StrictHostKeyChecking=no $WASSERVER_USERNAME@$WASSERVER_IP '
                             
-                            # Pull image from ECR to web server
-                            echo "pull the image from ECR "
-                            docker pull $ECR_PATH/$IMAGE_NAME:latest
+                                ls
 
-                            # Remove the existing container, if it exists
-                            echo " remove docker container if it exists"
-                            if docker ps -a | grep $CONTAINER_NAME; then
-                                docker rm -f $CONTAINER_NAME
-                            fi
-                            
-                            # Run a new Docker container using the image from ECR
-                            echo "docker run"
-                            docker run -d \
-                            -p 3000:3000\
-                            --name $CONTAINER_NAME $ECR_PATH/$IMAGE_NAME:latest
-                        '
-                    """
-                }
-                environment {
-                    AWS_CRED = credentials('ECR-access')
+                                # Login to ECR and pull the Docker image
+                                echo "login into aws"
+                                aws ecr get-login-password --region $REGION | docker login --username $ECR_USERNAME --password-stdin $ECR_PASSWORD
+                                
+                                # Pull image from ECR to web server
+                                echo "pull the image from ECR "
+                                docker pull $ECR_PATH/$IMAGE_NAME:latest
+
+                                # Remove the existing container, if it exists
+                                echo " remove docker container if it exists"
+                                if docker ps -a | grep $CONTAINER_NAME; then
+                                    docker rm -f $CONTAINER_NAME
+                                fi
+                                
+                                # Run a new Docker container using the image from ECR
+                                echo "docker run"
+                                docker run -d \
+                                -p 3000:3000\
+                                --name $CONTAINER_NAME $ECR_PATH/$IMAGE_NAME:latest
+                            '
+                        """
+                    }
                 }
             }
             post{
