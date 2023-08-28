@@ -100,7 +100,7 @@ pipeline {
             steps {
                 echo "Current branch is ${env.BRANCH_NAME}"
 
-                withCredentials([usernamePassword(credentialsId: 'aws-docker-access', passwordVariable: 'ECR_PASSWORD', usernameVariable: 'ECR_USERNAME')]){
+                //withCredentials([usernamePassword(credentialsId: 'aws-docker-access', passwordVariable: 'ECR_PATH', usernameVariable: 'ECR_NAME')]){
                     sshagent(credentials:['devfront']) { 
 
                         sh """
@@ -110,7 +110,7 @@ pipeline {
 
                                 # Login to ECR and pull the Docker image
                                 echo "login into aws"
-                                aws ecr get-login-password --region $REGION | docker login --username $ECR_USERNAME --password-stdin $ECR_PASSWORD
+                                aws ecr get-login-password --region $REGION | docker login --username $ECR_NAME --password-stdin $ECR_PATH
                                 
                                 # Pull image from ECR to web server
                                 echo "pull the image from ECR "
@@ -130,7 +130,7 @@ pipeline {
                             '
                         """
                     }
-                }
+                //}
             }
             post{
                 success {
