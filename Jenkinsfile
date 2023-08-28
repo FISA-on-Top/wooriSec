@@ -66,7 +66,7 @@ pipeline {
                     // cleanup current user docker credentials
                     sh 'rm -f ~/.dockercfg ~/.docker/config.json || true'
 
-                    docker.withRegistry("https://${ECR_PATH}", "ecr:${REGION}:${AWS_CREDENTIAL_NAME}") {
+                    docker.withRegistry("https://${ECR_PATH}", "ecr:${AWS_REGION}:${AWS_CREDENTIAL_NAME}") {
                       docker.image("${IMAGE_NAME}:${IMAGE_VERSION}").push()
                       docker.image("${IMAGE_NAME}:latest").push()
                     }
@@ -111,7 +111,7 @@ pipeline {
 
                                 # Login to ECR and pull the Docker image
                                 echo "login into aws"
-                                aws ecr get-login-password --region $REGION | docker login --username $ECR_NAME --password-stdin $ECR_PATH
+                                aws ecr get-login-password --region $AWS_REGION | docker login --username $ECR_NAME --password-stdin $ECR_PATH
                                 
                                 # Pull image from ECR to web server
                                 echo "pull the image from ECR "
