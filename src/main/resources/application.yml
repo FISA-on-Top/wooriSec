@@ -1,7 +1,6 @@
 server:
   port: 3000
 
-    
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -11,13 +10,35 @@ spring:
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
-    generate-ddl: true
+    generate-ddl: false
     hibernate:
-      ddl-auto: true
-      show-sql: true 
+      ddl-auto: update
+    show-sql: true 
   mvc:
     view:
       prefix: /WEB-INF/
       suffix: .jsp
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
+
+#server:
+#  port: 8080
+#
+#    
+#spring:
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    password: root
+#    url: jdbc:mysql://localhost/woori?characterEncoding=UTF-8
+#    username: root
+#  jpa:
+#    database: mysql
+#    database-platform: org.hibernate.dialect.MySQL8Dialect
+#    generate-ddl: false
+#    hibernate:
+#      ddl-auto: none
+#    show-sql: true 
+#  mvc:
+#    view:
+#      prefix: /WEB-INF/
+#      suffix: .jsp
