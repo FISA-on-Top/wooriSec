@@ -84,8 +84,7 @@ pipeline {
                     echo 'success upload image'
                 }
                 failure {
-                    //error 'fail upload image' // exit pipeline
-                    echo 'fail upload image'
+                    error 'fail upload image' // exit pipeline
                 }
             }
         }
