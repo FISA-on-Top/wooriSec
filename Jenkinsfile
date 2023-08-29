@@ -11,7 +11,7 @@ pipeline {
         ECR_PATH = '038331013212.dkr.ecr.ap-northeast-2.amazonaws.com'
         IMAGE_NAME = 'was'
         IMAGE_VERSION = "0.${BUILD_NUMBER}"
-        REGION = 'ap-northeast-2'
+        AWS_REGION = 'ap-northeast-2'
 
         SSH_PATH = '/var/jenkins_home/.ssh/DevWAS.pem'
         WASSERVER_USERNAME = 'ubuntu'
@@ -66,19 +66,20 @@ pipeline {
                     // cleanup current user docker credentials
                     sh 'rm -f ~/.dockercfg ~/.docker/config.json || true'
 
-                    docker.withRegistry("https://${ECR_PATH}", "ecr:${REGION}:${AWS_CREDENTIAL_NAME}") {
+                    docker.withRegistry("https://${ECR_PATH}", "ecr:${AWS_REGION}:${AWS_CREDENTIAL_NAME}") {
                       docker.image("${IMAGE_NAME}:${IMAGE_VERSION}").push()
                       docker.image("${IMAGE_NAME}:latest").push()
                     }
 
+                }
+            }
+            post {
+                always {
                     sh("docker rmi -f ${ECR_PATH}/${IMAGE_NAME}:${IMAGE_VERSION}")
                     sh("docker rmi -f ${ECR_PATH}/${IMAGE_NAME}:latest")
                     sh("docker rmi -f ${IMAGE_NAME}:${IMAGE_VERSION}")
                     sh("docker rmi -f ${IMAGE_NAME}:latest")
-
                 }
-            }
-            post {
                 success {
                     echo 'success upload image'
                 }
@@ -99,35 +100,37 @@ pipeline {
             steps {
                 echo "Current branch is ${env.BRANCH_NAME}"
 
-                sshagent(credentials:['devfront']) { 
+                //withCredentials([usernamePassword(credentialsId: 'aws-docker-access', passwordVariable: 'ECR_PATH', usernameVariable: 'ECR_NAME')]){
+                    sshagent(credentials:['devfront']) { 
 
-                    sh """
-                        ssh -t -i $SSH_PATH -o StrictHostKeyChecking=no $WASSERVER_USERNAME@$WASSERVER_IP '
-                        
-                            ls
-
-                            # Login to ECR and pull the Docker image
-                            echo "login into aws"
-                            aws ecr get-login-password --region $REGION | docker login --username $ECR_NAME --password-stdin $ECR_PATH
+                        sh """
+                            ssh -t -i $SSH_PATH -o StrictHostKeyChecking=no $WASSERVER_USERNAME@$WASSERVER_IP '
                             
-                            # Pull image from ECR to web server
-                            echo "pull the image from ECR "
-                            docker pull $ECR_PATH/$IMAGE_NAME:latest
+                                ls
 
-                            # Remove the existing container, if it exists
-                            echo " remove docker container if it exists"
-                            if docker ps -a | grep $CONTAINER_NAME; then
-                                docker rm -f $CONTAINER_NAME
-                            fi
-                            
-                            # Run a new Docker container using the image from ECR
-                            echo "docker run"
-                            docker run -d \
-                            -p 3000:3000\
-                            --name $CONTAINER_NAME $ECR_PATH/$IMAGE_NAME:latest
-                        '
-                    """
-                }
+                                # Login to ECR and pull the Docker image
+                                echo "login into aws"
+                                aws ecr get-login-password --region $AWS_REGION | docker login --username $ECR_NAME --password-stdin $ECR_PATH
+                                
+                                # Pull image from ECR to web server
+                                echo "pull the image from ECR "
+                                docker pull $ECR_PATH/$IMAGE_NAME:latest
+
+                                # Remove the existing container, if it exists
+                                echo " remove docker container if it exists"
+                                if docker ps -a | grep $CONTAINER_NAME; then
+                                    docker rm -f $CONTAINER_NAME
+                                fi
+                                
+                                # Run a new Docker container using the image from ECR
+                                echo "docker run"
+                                docker run -d\
+                                -p 3000:8080\
+                                --name $CONTAINER_NAME $ECR_PATH/$IMAGE_NAME:latest
+                            '
+                        """
+                    }
+                //}
             }
             post{
                 success {
