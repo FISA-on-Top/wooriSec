@@ -26,11 +26,11 @@ public class OrderController {
 	@Autowired
 	private OrderService orderService;
 	
-	@ApiOperation(value = "신청 가능한 종목 조회", notes = "API 설명 부분 : 신청 가능한 ipo 종목 조회")
+	@ApiOperation(value = "종목 조회", notes = "API 설명 부분 : ipo 종목 조회")
 	@ApiResponses({ 
-		@ApiResponse(code = 200, message = "OK !!"),
-		@ApiResponse(code = 404, message = "404 에러 발생시 출력 메세지, Not Found !"),
-		@ApiResponse(code = 500, message = "500 에러 발생시 출력 메세지, 가령 Internal Server Error !")
+		@ApiResponse(code = 200, message = "성공"),
+		@ApiResponse(code = 404, message = "404 에러 발생"),
+		@ApiResponse(code = 500, message = "500 에러 발생")
 	})
 	
 	// 해당 일자 클릭 시 해당 일자 신청 가능한 공모주 조회
@@ -48,6 +48,7 @@ public class OrderController {
         OrderAccountDto accountDto = orderService.getAccountByUserId(userId);
         return ResponseEntity.ok(accountDto);
     }
+	
 
 	//청약 정보 입력 > 청약계좌 선택 > 계좌 비밀번호 [확인]버튼
 //	@GetMapping("/account/verify")

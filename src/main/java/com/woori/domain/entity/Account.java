@@ -37,7 +37,7 @@ public class Account {
 	private Date birth;
     @Column(name = "account_pw", nullable = false, length = 50)
 	private String accountPw;
-    @Column(name = "balance", nullable = false, precision = 18, scale = 3)
+    @Column(name = "balance", nullable = false, precision = 18, scale = 2)
 	private BigDecimal balance;
 	
 

@@ -23,7 +23,7 @@ public class SwaggerConfig {
 	}
 
 	private ApiInfo apiInfo() {
-		return new ApiInfoBuilder().title("Swagger Doc : Open API 활용 Test").description("Swagger Doc 학습을 위한 기본 문서 작성중 ")
+		return new ApiInfoBuilder().title("WooriSec Open API").description("Open API 명세")
 				.version("1.0.1").build();
 	}
 

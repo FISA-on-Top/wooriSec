@@ -24,9 +24,9 @@ public class IpoController {
 
 	@ApiOperation(value = "종목 조회", notes = "API 설명 부분 : ipo 종목 조회")
 	@ApiResponses({ 
-		@ApiResponse(code = 200, message = "OK !!"),
-		@ApiResponse(code = 404, message = "404 에러 발생시 출력 메세지, Not Found !"),
-		@ApiResponse(code = 500, message = "500 에러 발생시 출력 메세지, 가령 Internal Server Error !")
+		@ApiResponse(code = 200, message = "성공"),
+		@ApiResponse(code = 404, message = "404 에러 발생"),
+		@ApiResponse(code = 500, message = "500 에러 발생")
 	})
 	@GetMapping("/list") // 팝업창으로 떠야할수도
 	public ResponseEntity<List<InquireDto>> getAllIpoDetails() {
