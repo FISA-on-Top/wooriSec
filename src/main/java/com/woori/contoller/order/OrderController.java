@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.woori.dto.order.OrderAccountDto;
+import com.woori.dto.order.OrderListDto;
 import com.woori.dto.order.OrderableDto;
 import com.woori.service.order.OrderService;
 
@@ -58,11 +59,15 @@ public class OrderController {
 //	@GetMapping("/approval")
 	
 	//청약 결과 조회/취소 - 신청 결과 조회 
-//	@GetMapping("/")
+	@GetMapping("/list")
+	public ResponseEntity<OrderListDto> getOrderInfo(@RequestHeader String userId){
+		OrderListDto orderListDto = orderService.getOrderList(userId);
+		return ResponseEntity.ok(orderListDto);
+	}
 	
 	
 	//청약 결과 조회/취소 - ‘취소’ 버튼 클릭
-//	@GETMapping("/{userId}
+//	@GETMapping("/{userId})
 		
 	}
 	
