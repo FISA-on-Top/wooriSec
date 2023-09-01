@@ -22,7 +22,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Orders {
+public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +33,7 @@ public class Orders {
     private String userId;
 
     @Column(name = "ipo_id", nullable = false)
-    private int ipoId;
+    private long ipoId;
 
     @Column(name = "order_amount")
     private int orderAmount;

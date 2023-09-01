@@ -17,10 +17,10 @@ import io.swagger.annotations.ApiResponses;
 
 @RestController // json 형태 결과값 반환 -> @Response가 필요x
 @RequestMapping("/ipo") // inquire의 API
-public class InquireController {
+public class IpoController {
 
     @Autowired
-	private InquireServiceImpl inquireService; // ??이거 모르겠음
+	private InquireServiceImpl inquireService;	//@Service로 선언된 클래스의 인스턴스(ServiceImpl 주입받아 사용)
 
 	@ApiOperation(value = "종목 조회", notes = "API 설명 부분 : ipo 종목 조회")
 	@ApiResponses({ 
@@ -33,4 +33,5 @@ public class InquireController {
 		List<InquireDto> inquireDtos = inquireService.getAllIpoDetails();
 		return ResponseEntity.ok(inquireDtos);
 	}
+	
 }

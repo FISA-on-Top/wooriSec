@@ -30,7 +30,7 @@ public class Account {
     @Column(name = "account_id")
 	private Long accountId;
     @Column(name = "account_num", nullable = false, length = 15)
-	private String accountName;
+	private String accountNum;
     @Column(name = "name", nullable = false, length = 20)
 	private String name;
     @Column(name = "birth", nullable = false)
