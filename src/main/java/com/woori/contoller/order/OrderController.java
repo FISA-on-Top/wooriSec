@@ -6,14 +6,18 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.woori.dto.order.OrderAccountDto;
+import com.woori.dto.order.OrderInfoDto;
 import com.woori.dto.order.OrderListDto;
+import com.woori.dto.order.OrderRequestDto;
 import com.woori.dto.order.OrderableDto;
 import com.woori.service.order.OrderService;
 
@@ -37,7 +41,7 @@ public class OrderController {
 	// 해당 일자 클릭 시 해당 일자 신청 가능한 공모주 조회
 	@GetMapping
 	public ResponseEntity<List<OrderableDto>> getAllIpoDetails(
-            @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date ipoDate) {
+            @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date ipoDate) throws Exception{
         List<OrderableDto> orderableDtos = orderService.getIposInfo(ipoDate);
         return ResponseEntity.ok(orderableDtos);
     }
@@ -45,7 +49,7 @@ public class OrderController {
 	
 	//사용자 아이디 request header로 받아 해당 아이디에 대한 계좌번호 리턴(청약하기 버튼 클릭)
 	@GetMapping("/account")
-	public ResponseEntity<OrderAccountDto> getAccountInfo(@RequestHeader String userId) {
+	public ResponseEntity<OrderAccountDto> getAccountInfo(@RequestHeader String userId) throws Exception{
         OrderAccountDto accountDto = orderService.getAccountByUserId(userId);
         return ResponseEntity.ok(accountDto);
     }
@@ -56,11 +60,18 @@ public class OrderController {
 	
 	
 	//청약 정보 입력 > ‘다음’ 버튼 클릭
-//	@GetMapping("/approval")
+	//중간에 바뀔 수도??
+	@GetMapping("/approval")
+	public ResponseEntity<OrderInfoDto> OrderInfo(@RequestBody OrderRequestDto orderRequestDto) throws Exception{
+		OrderInfoDto orderInfoDto = orderService.getOrderInfo();
+		
+		return ResponseEntity.ok(orderInfoDto);
+		
+	}
 	
 	//청약 결과 조회/취소 - 신청 결과 조회 
 	@GetMapping("/list")
-	public ResponseEntity<OrderListDto> getOrderInfo(@RequestHeader String userId){
+	public ResponseEntity<OrderListDto> getOrderInfo(@RequestHeader String userId) throws Exception {
 		OrderListDto orderListDto = orderService.getOrderList(userId);
 		return ResponseEntity.ok(orderListDto);
 	}
@@ -68,6 +79,15 @@ public class OrderController {
 	
 	//청약 결과 조회/취소 - ‘취소’ 버튼 클릭
 //	@GETMapping("/{userId})
-		
+	
+	
+	
+	//예외처리
+	@ExceptionHandler
+	public String exceptMsg(Exception e) {
+		e.printStackTrace();
+		return "예외발생";
 	}
+		
+}
 	

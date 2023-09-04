@@ -12,6 +12,8 @@ import com.woori.domain.entity.User;
 import com.woori.domain.ipo.IpoRepository;
 import com.woori.domain.user.UserRepository;
 import com.woori.dto.order.OrderAccountDto;
+import com.woori.dto.order.OrderInfoDto;
+import com.woori.dto.order.OrderListDto;
 import com.woori.dto.order.OrderableDto;
 
 @Service
@@ -55,4 +57,21 @@ public class OrderServiceImpl implements OrderService {
         return new OrderAccountDto(user.getAccountNum());
 		
 	}
+	
+	//청약 정보 입력 > ‘다음’ 버튼 클릭
+	@Override
+	public OrderInfoDto getOrderInfo() {
+		return null;
+	}
+	
+	
+	//청약 결과 조회/취소 - 신청결과조회 서비스
+	@Override
+	public OrderListDto getOrderList(String userId) {
+		
+		//임시로 null반환
+		return null;
+	}
+	
+	
 }
