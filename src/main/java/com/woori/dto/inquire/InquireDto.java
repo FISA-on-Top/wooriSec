@@ -1,6 +1,7 @@
 package com.woori.dto.inquire;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
@@ -22,9 +23,9 @@ public class InquireDto {
 	private Long ipoId;
 	private int corpCode;
 	private String corpName;	// 기업명
-	private Date sbd;
-	private Date pymd;
-	private Date refund;
+	private LocalDate sbd;
+	private LocalDate pymd;
+	private LocalDate refund;
 	private Date ipoDate;
 	private BigDecimal slprc;
 	private String corpCls;	// 분류 (컬럼명을 자바의 네이밍 규칙에 맞게 수정)

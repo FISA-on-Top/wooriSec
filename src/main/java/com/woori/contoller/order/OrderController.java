@@ -1,6 +1,6 @@
 package com.woori.contoller.order;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.woori.dto.account.VerifyRequestDto;
 import com.woori.dto.order.OrderAccountDto;
 import com.woori.dto.order.OrderCancelDto;
 import com.woori.dto.order.OrderInfoDto;
 import com.woori.dto.order.OrderListDto;
 import com.woori.dto.order.OrderRequestDto;
+import com.woori.dto.order.OrderAccountVerifyDto;
 import com.woori.dto.order.OrderableDto;
 import com.woori.service.order.OrderService;
 
@@ -45,6 +47,8 @@ public class OrderController {
 	public ResponseEntity<List<OrderableDto>> getAllIpoDetails(
             @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date ipoDate) throws Exception{
         List<OrderableDto> orderableDtos = orderService.getIposInfo(ipoDate);
+            @RequestParam(value="date", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate sbd) {
+        List<OrderableDto> orderableDtos = orderService.getIposInfo(sbd);
         return ResponseEntity.ok(orderableDtos);
     }
 
@@ -52,6 +56,8 @@ public class OrderController {
 	//사용자 아이디 request header로 받아 해당 아이디에 대한 계좌번호 리턴(청약하기 버튼 클릭)
 	@GetMapping("/account")
 	public ResponseEntity<OrderAccountDto> getAccountInfo(@RequestHeader String userId) throws Exception{
+	public ResponseEntity<OrderAccountDto> getAccountInfo(
+			@RequestHeader String userId) {
         OrderAccountDto accountDto = orderService.getAccountByUserId(userId);
         return ResponseEntity.ok(accountDto);
     }
@@ -91,6 +97,19 @@ public class OrderController {
 		OrderCancelDto orderCancelDto = orderService.getcancelOrder(accountNum, accountPw);
 
 		return ResponseEntity.ok(orderCancelDto);
+	//청약 정보 입력 > 청약계좌 선택 > 계좌 비밀번호 확인버튼
+	@GetMapping("/account/verify")
+	public ResponseEntity<?> verifyAccount(
+			@RequestHeader VerifyRequestDto dto) {
+
+		OrderAccountVerifyDto verifyDto = orderService.getOrderableInfo(dto);
+		
+		if (verifyDto != null) {
+            return ResponseEntity.ok(verifyDto);
+        } else {
+        	//인증 실패
+            return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다");
+        }
 	}
 	
 	
@@ -101,5 +120,7 @@ public class OrderController {
 		return "예외발생";
 	}
 		
+}
+	
 }
 	

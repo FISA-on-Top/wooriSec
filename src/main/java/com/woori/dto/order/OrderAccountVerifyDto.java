@@ -1,7 +1,6 @@
-package com.woori.dto.account;
+package com.woori.dto.order;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,16 +12,14 @@ import lombok.ToString;
 @Data
 @Getter
 @Setter
-@ToString
-@NoArgsConstructor
 @AllArgsConstructor
-public class AccountDto {
-
-	private String accountName;
-	private String name;
-	private Date birth;
-	private String accountPw;
+@NoArgsConstructor
+@ToString
+//계좌 , 비밀번호 입력시 response 데이터
+public class OrderAccountVerifyDto {
+    private Long ipoId;
 	private BigDecimal balance;
-	//더 추가하기
+	private int orderableAmount;
+    private BigDecimal slprc;	//공모가(확정발행가)
 	
 }

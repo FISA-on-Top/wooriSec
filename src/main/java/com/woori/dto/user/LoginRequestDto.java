@@ -1,4 +1,4 @@
-package com.woori.dto.order;
+package com.woori.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +13,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-//사용자 아이디 입력시 사용자 계좌번호 response
-public class OrderAccountDto {
-	private String accountNum;
+public class LoginRequestDto {
+
+    private String userId;
+    private String userPw;
+
 }

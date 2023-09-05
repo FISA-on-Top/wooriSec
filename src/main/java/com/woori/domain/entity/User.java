@@ -1,7 +1,9 @@
 package com.woori.domain.entity;
 
 
-import java.util.Date;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -39,13 +41,15 @@ public class User {
     @Column(name = "email", nullable = false, length = 50)
     private String email;
 
-    @Column(name = "birth")
-    private Date birth;
+    @Column(name = "birth", columnDefinition = "DATE")
+    private LocalDate birth;
 
-    @Column(name = "account_num", length = 15)
+    @Column(name = "account_num", unique = true, length = 15)
     private String accountNum;
 
-    @Column(name = "created_at")
-    private Date createdAt;
-
+    @Column(name = "created_at", columnDefinition = "DATETIME", nullable = false, updatable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
+    
+    @Column(name = "balance", nullable = false, precision = 18, scale = 2)
+	private BigDecimal balance;
 }
