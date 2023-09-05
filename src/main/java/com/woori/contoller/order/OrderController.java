@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.woori.dto.order.OrderAccountDto;
+import com.woori.dto.order.OrderCancelDto;
 import com.woori.dto.order.OrderInfoDto;
 import com.woori.dto.order.OrderListDto;
 import com.woori.dto.order.OrderRequestDto;
@@ -61,10 +63,9 @@ public class OrderController {
 	
 	//청약 정보 입력 > ‘다음’ 버튼 클릭
 	//중간에 바뀔 수도??
-	@GetMapping("/approval")
+	@PostMapping("/approval")
 	public ResponseEntity<OrderInfoDto> OrderInfo(@RequestBody OrderRequestDto orderRequestDto) throws Exception{
-		OrderInfoDto orderInfoDto = orderService.getOrderInfo();
-		
+		OrderInfoDto orderInfoDto = orderService.setOrderInfo(orderRequestDto);
 		return ResponseEntity.ok(orderInfoDto);
 		
 	}
@@ -80,6 +81,17 @@ public class OrderController {
 	//청약 결과 조회/취소 - ‘취소’ 버튼 클릭
 //	@GETMapping("/{userId})
 	
+	
+	
+	//청약 결과 조회/취소 - ‘실행’ 버튼 클릭
+	@GetMapping("/cancel")
+	public ResponseEntity<OrderCancelDto> cancelOrder(
+			@RequestHeader(value = "AccountNum", required = false) String accountNum,
+			@RequestHeader(value = "AccountPw", required = false) String accountPw){
+		OrderCancelDto orderCancelDto = orderService.getcancelOrder(accountNum, accountPw);
+
+		return ResponseEntity.ok(orderCancelDto);
+	}
 	
 	
 	//예외처리

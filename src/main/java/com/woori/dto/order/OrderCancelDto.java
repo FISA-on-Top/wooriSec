@@ -16,18 +16,15 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-
-public class OrderInfoDto {
+public class OrderCancelDto {
 	
-    private Long ipoId;
-    private String name;
-    private String corpName;
-    private int orderAmount;
-    private BigDecimal slprc;
+	private BigDecimal balance;
+	private int orderAmount;
+    private String corpCls;
+    //청약구분 = "상장"
     private BigDecimal deposit;
-    private String phoneNum;
-    private Date refund;
-    private Date pymd;
-    
-
+    private long orderId;
+    private Date cancleDate;
+	private int corpCode;
+    private String corpName;
 }

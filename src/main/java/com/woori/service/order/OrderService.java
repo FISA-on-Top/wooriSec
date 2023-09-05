@@ -4,8 +4,10 @@ import java.util.Date;
 import java.util.List;
 
 import com.woori.dto.order.OrderAccountDto;
+import com.woori.dto.order.OrderCancelDto;
 import com.woori.dto.order.OrderInfoDto;
 import com.woori.dto.order.OrderListDto;
+import com.woori.dto.order.OrderRequestDto;
 import com.woori.dto.order.OrderableDto;
 
 public interface OrderService {
@@ -20,7 +22,12 @@ public interface OrderService {
     public OrderAccountDto getAccountByUserId(String accountNum);
     
     
-    public OrderInfoDto getOrderInfo();
-    //
+    //청약정보 입력 후 다음버튼 클릭 -> 청약 정보
+    public OrderInfoDto setOrderInfo(OrderRequestDto orderRequestDto);
+    
+    //userId입력 시 신청결과 조회 
     public OrderListDto getOrderList(String userId);
+    
+    //청약결과 조회/취소 - '실행'버튼 클릭
+    public OrderCancelDto getcancelOrder(String accountNum, String Pw);
 }
