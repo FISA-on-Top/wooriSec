@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.woori.domain.entity.Ipo;
-import com.woori.domain.ipo.InquireRepository;
+import com.woori.domain.ipo.IpoRepository;
 import com.woori.dto.inquire.InquireDto;
 
 	//캘린더 조회
@@ -16,7 +16,7 @@ import com.woori.dto.inquire.InquireDto;
 public class InquireServiceImpl implements InquireService {
 
     @Autowired
-    private InquireRepository inquireRepository;
+    private IpoRepository inquireRepository;
 
     @Override
     public List<InquireDto> getAllIpoDetails() {
