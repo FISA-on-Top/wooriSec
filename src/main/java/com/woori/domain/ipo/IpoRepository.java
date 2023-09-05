@@ -13,6 +13,8 @@ public interface IpoRepository extends JpaRepository<Ipo, Long> {
 	//날짜에 따라 가능한 공모주 조회
 	List<Ipo> findBySbd(LocalDate date);
 
-	Ipo findByIpoId(Long ipoId);
+	//Ipo findByIpoId(Ipo ipo);
+	//Ipo findByIpoId(Long ipoId);
+	
 
 }

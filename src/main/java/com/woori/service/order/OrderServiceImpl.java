@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import com.woori.domain.account.AccountRepository;
 import com.woori.domain.entity.Account;
 import com.woori.domain.entity.Ipo;
-import com.woori.domain.entity.Order;
+import com.woori.domain.entity.Orders;
 import com.woori.domain.entity.User;
 import com.woori.domain.ipo.IpoRepository;
 import com.woori.domain.order.OrderRepository;
@@ -64,7 +64,7 @@ public class OrderServiceImpl implements OrderService {
     
     //유저아이디 입력시 계좌번호 리턴
 	public OrderAccountDto getAccountByUserId(String userId) {
-		User user = userRepository.findByUserId(userId)
+		User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Account not found for user id: " + userId));
 
         return new OrderAccountDto(user.getAccountNum());
@@ -82,7 +82,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         Long ipoId = requestDto.getIpoId();
-        Ipo ipo = ipoRepository.findByIpoId(ipoId);
+        Optional<Ipo> ipo = ipoRepository.findById(ipoId);
 
         
         OrderAccountVerifyDto responseDto = new OrderAccountVerifyDto();
@@ -100,13 +100,14 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public OrderInfoDto setOrderInfo(OrderRequestDto orderRequestDto) {
 		String userId = "유저임";
-		Order order = new Order(orderRequestDto, userId);
+		Orders orders = new Orders(orderRequestDto, userId);
 		//신청내역 저장 DB order테이블에 맞춰서
-		orderRepository.save(order);
+		orderRepository.save(orders);
 		
 //		userRepository.save(orderResponseDto);
-//		Optional<Ipo> optionalUser = userRepository.findByUserId()
-		Optional<Ipo> optionalIpo = ipoRepository.findById(orderRequestDto.getIpoId());
+//		Optional<Ipo> optionalUser = userRepository.findById()
+		Optional<Ipo> optionalIpo = ipoRepository.findById(orderRequestDto.getIpo().getIpoId());
+		
 		if(optionalIpo.isPresent()) {
 	        Ipo ipo = optionalIpo.get(); 
 	        // OrderInfoDto 객체를 생성하고 값을 설정
@@ -124,19 +125,20 @@ public class OrderServiceImpl implements OrderService {
 	        return orderInfoDto;
 	    } else {
 	        // 해당 IPO 정보가 없는 경우
-	        throw new EntityNotFoundException("IPO with id " + orderRequestDto.getIpoId() + " not found.");
+	        throw new EntityNotFoundException("IPO with id " + orderRequestDto.getIpo().getIpoId() + " not found.");
 	    }
 	}
 	
 	
 	//청약 결과 조회/취소 - 신청결과조회 서비스
 	@Override
-	public OrderListDto getOrderList(String userId) {
+	public Optional<OrderListDto> getOrderList(String userId) {
 		
 //		Optional<OrderListDto> orderList = Optional<OrderListDto>;
-//		orderList = orderRepository.findByUserId(userId);
-		return orderRepository.findByUserId(userId)
-				.orElseThrow(() -> new EntityNotFoundException("Order not found for user ID: " + userId));
+//		orderList = orderRepository.findById(userId);
+		Optional<OrderListDto> orderList = orderRepository.findById(userId);
+		return orderList;
+	//orderRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Order not found for user ID: " + userId));
 
 	}
 	

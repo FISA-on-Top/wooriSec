@@ -3,7 +3,7 @@ package com.woori.dto.order;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.woori.domain.entity.Ipo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +22,7 @@ import lombok.ToString;
 @ToString
 public class OrderRequestDto {
 
-    private Long ipoId;
+    private Ipo ipo;
     private int orderAmount;
     private String phoneNum;
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")

@@ -2,14 +2,15 @@ package com.woori.service.order;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import com.woori.dto.account.VerifyRequestDto;
 import com.woori.dto.order.OrderAccountDto;
+import com.woori.dto.order.OrderAccountVerifyDto;
 import com.woori.dto.order.OrderCancelDto;
 import com.woori.dto.order.OrderInfoDto;
 import com.woori.dto.order.OrderListDto;
 import com.woori.dto.order.OrderRequestDto;
-import com.woori.dto.order.OrderAccountVerifyDto;
 import com.woori.dto.order.OrderableDto;
 
 public interface OrderService {
@@ -33,7 +34,7 @@ public interface OrderService {
     public OrderInfoDto setOrderInfo(OrderRequestDto orderRequestDto);
     
     //userId입력 시 신청결과 조회 
-    public OrderListDto getOrderList(String userId);
+    public Optional<OrderListDto> getOrderList(String userId);
     
     //청약결과 조회/취소 - '실행'버튼 클릭
     public OrderCancelDto getcancelOrder(String accountNum, String Pw);

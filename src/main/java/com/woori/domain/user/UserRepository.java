@@ -15,7 +15,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 	Optional<User> findByuserId(String userId);
 	
 	//계좌조회
-	Optional<User> findByUserId(String userId);
+	Optional<User> findById(String userId);
 	
 	User findByBalance(BigDecimal balance);
 	

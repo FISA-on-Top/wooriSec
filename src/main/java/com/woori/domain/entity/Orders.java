@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.woori.dto.order.OrderRequestDto;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -56,7 +58,23 @@ public class Orders {
     @Column(name = "cancle_date", columnDefinition = "DATETIME")
     private LocalDateTime cancleDate;
     
+    @Column(name = "phone_num")
+    private String phoneNum;
+    
     @Column(name = "deposit", precision = 18, scale = 2)
 	private BigDecimal deposit;	//청약증거금
+    
+    public Orders(OrderRequestDto orderRequestDto, String userId) {
+    	this.orderId = orderId;//orderId
+    	this.user = user;//userId
+    	this.ipo = orderRequestDto.getIpo();//ipoId
+    	this.orderAmount = orderRequestDto.getOrderAmount();//orderAmount
+    	this.status = "";//status
+    	this.orderDate = orderDate;//orderDate
+//    	Date date = new Date();
+    	this.cancleDate = cancleDate;//cancelDate
+    	this.phoneNum = orderRequestDto.getPhoneNum();//phoneNum
+    	this.deposit = orderRequestDto.getDeposit();//deposit
+    }
 
 }

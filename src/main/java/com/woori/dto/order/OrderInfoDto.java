@@ -1,7 +1,7 @@
 package com.woori.dto.order;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,8 +26,7 @@ public class OrderInfoDto {
     private BigDecimal slprc;
     private BigDecimal deposit;
     private String phoneNum;
-    private Date refund;
-    private Date pymd;
-    
+    private LocalDate refund;
+    private LocalDate pymd;
 
 }
