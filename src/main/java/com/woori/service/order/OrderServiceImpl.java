@@ -139,22 +139,18 @@ public class OrderServiceImpl implements OrderService {
 	
 	
 	//청약 결과 조회/취소 - 신청결과조회 서비스
-	@Override
-	public OrderListDto getOrderList(Long userId) {
-		
+//	@Override
+//	public OrderListDto getOrderList(String userId) {
+//		
 ////		Optional<OrderListDto> orderList = Optional<OrderListDto>;
-////		orderList = orderRepository.findById(userId);
-//		Optional<OrderListDto> orderList = orderRepository.findAllById(userId);
+//		Optional<OrderListDto> orderList  = orderRepository.findById(userId);
+//		//return orderRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Order not found for user ID: " + userId));
 //		if(!orderList.isPresent()) {
 //			new EntityNotFoundException("Order not found for user ID: " + userId);
 //		}
 //		
 //		return orderList.get();
-		
-		return null;
-	//orderRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Order not found for user ID: " + userId));
-
-	}
+//	}
 	
 	
 	//청약결과 조회/취소 - '실행'버튼 클릭

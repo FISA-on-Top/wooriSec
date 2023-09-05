@@ -30,4 +30,5 @@ public class OrderRequestDto {
     private LocalDateTime orderDate;
     private BigDecimal deposit;  // 이 부분은 문자열로 받아와서 처리하는 것이 나을 수 있습니다. - chatGPT
 
+    	
 }

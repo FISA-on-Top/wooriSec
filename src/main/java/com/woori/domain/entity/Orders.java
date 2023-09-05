@@ -65,6 +65,7 @@ public class Orders {
     @Column(name = "deposit", precision = 18, scale = 2)
 	private BigDecimal deposit;	//청약증거금
     
+    //서비스로 메서드 하나 옮긴 후 지우면 good
     public Orders(OrderRequestDto orderRequestDto, String userId) {
     	this.orderAmount = orderRequestDto.getOrderAmount();//orderAmount
     	this.status = "";//status

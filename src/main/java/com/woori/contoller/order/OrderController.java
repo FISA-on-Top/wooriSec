@@ -2,7 +2,6 @@ package com.woori.contoller.order;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -69,12 +68,11 @@ public class OrderController {
 	}
 
 	// 청약 결과 조회/취소 - 신청 결과 조회
-	@GetMapping("/list")
-	public ResponseEntity<OrderListDto> getOrderInfo(@RequestHeader Long userId) throws Exception {
-		OrderListDto orderListDto = orderService.getOrderList(userId);
-		//return ResponseEntity.ok(orderListDto);
-		return null;
-	}
+//	@GetMapping("/list")
+//	public ResponseEntity<OrderListDto> getOrderInfo(@RequestHeader String userId) throws Exception {
+//		OrderListDto orderListDto = orderService.getOrderList(userId);
+//		return ResponseEntity.ok(orderListDto);
+//	}
 
 	// 청약 결과 조회/취소 - ‘취소’ 버튼 클릭
 //	@GETMapping("/{userId})
