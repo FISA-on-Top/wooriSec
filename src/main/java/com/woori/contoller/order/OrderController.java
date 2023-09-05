@@ -24,7 +24,7 @@ import com.woori.dto.order.OrderInfoDto;
 import com.woori.dto.order.OrderListDto;
 import com.woori.dto.order.OrderRequestDto;
 import com.woori.dto.order.OrderableDto;
-import com.woori.service.order.OrderService;
+import com.woori.service.order.OrderServiceImpl;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -35,7 +35,7 @@ import io.swagger.annotations.ApiResponses;
 public class OrderController {
 
 	@Autowired
-	private OrderService orderService;
+	private OrderServiceImpl orderService;
 
 	@ApiOperation(value = "종목 조회", notes = "API 설명 부분 : ipo 종목 조회")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 404, message = "404 에러 발생"),
@@ -70,8 +70,8 @@ public class OrderController {
 
 	// 청약 결과 조회/취소 - 신청 결과 조회
 	@GetMapping("/list")
-	public ResponseEntity<OrderListDto> getOrderInfo(@RequestHeader String userId) throws Exception {
-		Optional<OrderListDto> orderListDto = orderService.getOrderList(userId);
+	public ResponseEntity<OrderListDto> getOrderInfo(@RequestHeader Long userId) throws Exception {
+		OrderListDto orderListDto = orderService.getOrderList(userId);
 		//return ResponseEntity.ok(orderListDto);
 		return null;
 	}

@@ -2,6 +2,7 @@ package com.woori.domain.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,7 +34,7 @@ public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
-    private long orderId;
+    private Long orderId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
@@ -65,14 +66,10 @@ public class Orders {
 	private BigDecimal deposit;	//청약증거금
     
     public Orders(OrderRequestDto orderRequestDto, String userId) {
-    	this.orderId = orderId;//orderId
-    	this.user = user;//userId
-    	this.ipo = orderRequestDto.getIpo();//ipoId
     	this.orderAmount = orderRequestDto.getOrderAmount();//orderAmount
     	this.status = "";//status
-    	this.orderDate = orderDate;//orderDate
-//    	Date date = new Date();
-    	this.cancleDate = cancleDate;//cancelDate
+    	this.orderDate = orderRequestDto.getOrderDate();//orderDate
+    	this.cancleDate = null;//cancelDate
     	this.phoneNum = orderRequestDto.getPhoneNum();//phoneNum
     	this.deposit = orderRequestDto.getDeposit();//deposit
     }

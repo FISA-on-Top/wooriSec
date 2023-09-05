@@ -95,49 +95,63 @@ public class OrderServiceImpl implements OrderService {
         return responseDto;
     }
 
+	//유저 잔액조회
 	
 	//청약 정보 입력 > ‘다음’ 버튼 클릭
 	@Override
 	public OrderInfoDto setOrderInfo(OrderRequestDto orderRequestDto) {
+		
 		String userId = "유저임";
+		User user = userRepository.findById(userId).orElse(null);
+		Ipo ipo = ipoRepository.findById(orderRequestDto.getIpoId()).get();
+		
 		Orders orders = new Orders(orderRequestDto, userId);
+		orders.setUser(user);
+		orders.setIpo(ipo);
+		
 		//신청내역 저장 DB order테이블에 맞춰서
 		orderRepository.save(orders);
 		
 //		userRepository.save(orderResponseDto);
 //		Optional<Ipo> optionalUser = userRepository.findById()
-		Optional<Ipo> optionalIpo = ipoRepository.findById(orderRequestDto.getIpo().getIpoId());
+		Optional<Ipo> optionalIpo = ipoRepository.findById(orders.getIpo().getIpoId());
 		
 		if(optionalIpo.isPresent()) {
-	        Ipo ipo = optionalIpo.get(); 
+	        Ipo ipoTemp = optionalIpo.get(); 
 	        // OrderInfoDto 객체를 생성하고 값을 설정
 	        OrderInfoDto orderInfoDto = new OrderInfoDto(); 
-	        orderInfoDto.setIpoId(ipo.getIpoId()); //IpoId
+	        orderInfoDto.setIpoId(ipoTemp.getIpoId()); //IpoId
 	        orderInfoDto.setName("Account_Name");//accountName 청약계좌 소유자 명 -- String
 	        orderInfoDto.setCorpName(ipo.getCorpName()); //종목명
 	        orderInfoDto.setOrderAmount(orderRequestDto.getOrderAmount());//청약 주수
-	        orderInfoDto.setSlprc(ipo.getSlprc());//공모가(확정 발행가) 
+	        orderInfoDto.setSlprc(ipoTemp.getSlprc());//공모가(확정 발행가) 
 	        orderInfoDto.setDeposit(orderRequestDto.getDeposit()); //증거금(deposit) Orders테이블
 	        orderInfoDto.setPhoneNum(orderRequestDto.getPhoneNum());
-	        orderInfoDto.setRefund(ipo.getRefund());//환불일 
-	        orderInfoDto.setPymd(ipo.getPymd());//납입일
+	        orderInfoDto.setRefund(ipoTemp.getRefund());//환불일 
+	        orderInfoDto.setPymd(ipoTemp.getPymd());//납입일
 	        
 	        return orderInfoDto;
 	    } else {
 	        // 해당 IPO 정보가 없는 경우
-	        throw new EntityNotFoundException("IPO with id " + orderRequestDto.getIpo().getIpoId() + " not found.");
+	        throw new EntityNotFoundException("IPO with id " + orderRequestDto.getIpoId() + " not found.");
 	    }
 	}
 	
 	
 	//청약 결과 조회/취소 - 신청결과조회 서비스
 	@Override
-	public Optional<OrderListDto> getOrderList(String userId) {
+	public OrderListDto getOrderList(Long userId) {
 		
-//		Optional<OrderListDto> orderList = Optional<OrderListDto>;
-//		orderList = orderRepository.findById(userId);
-		Optional<OrderListDto> orderList = orderRepository.findById(userId);
-		return orderList;
+////		Optional<OrderListDto> orderList = Optional<OrderListDto>;
+////		orderList = orderRepository.findById(userId);
+//		Optional<OrderListDto> orderList = orderRepository.findAllById(userId);
+//		if(!orderList.isPresent()) {
+//			new EntityNotFoundException("Order not found for user ID: " + userId);
+//		}
+//		
+//		return orderList.get();
+		
+		return null;
 	//orderRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Order not found for user ID: " + userId));
 
 	}
@@ -155,7 +169,5 @@ public class OrderServiceImpl implements OrderService {
 		e.printStackTrace();
 		return "Service 예외발생";
 	}
-	
-	
 	
 }

@@ -29,12 +29,11 @@ public interface OrderService {
 	
 	//유저 잔액조회
     
-    
     //청약정보 입력 후 다음버튼 클릭 -> 청약 정보
     public OrderInfoDto setOrderInfo(OrderRequestDto orderRequestDto);
     
     //userId입력 시 신청결과 조회 
-    public Optional<OrderListDto> getOrderList(String userId);
+    public OrderListDto getOrderList(Long userId);
     
     //청약결과 조회/취소 - '실행'버튼 클릭
     public OrderCancelDto getcancelOrder(String accountNum, String Pw);

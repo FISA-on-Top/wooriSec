@@ -15,7 +15,7 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
 
 	void save(OrderRequestDto orderRequestDto);
 
-	Optional<OrderListDto> findById(String userId);
+//	Optional<OrderListDto> findById(String userId);
 
 //	Optional<OrderListDto> findByUserId(String userId);
 	
