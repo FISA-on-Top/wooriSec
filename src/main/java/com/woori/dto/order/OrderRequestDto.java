@@ -2,7 +2,6 @@ package com.woori.dto.order;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import com.woori.domain.entity.Ipo;
 

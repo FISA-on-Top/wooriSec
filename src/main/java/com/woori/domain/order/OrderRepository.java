@@ -1,5 +1,7 @@
 package com.woori.domain.order;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,8 +11,10 @@ import com.woori.domain.entity.Orders;
 @Repository
 public interface OrderRepository extends JpaRepository<Orders, Long> {
 
-	//void save(OrderRequestDto orderRequestDto);
+	void save(OrderRequestDto orderRequestDto);
 
-	//Optional<OrderListDto> findById(long userId);
+//	Optional<OrderListDto> findById(String userId);
+
+//	Optional<OrderListDto> findByUserId(String userId);
 	
 }
