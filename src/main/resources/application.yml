@@ -12,7 +12,7 @@ spring:
    database-platform: org.hibernate.dialect.MySQL8Dialect
    generate-ddl: false
    hibernate:
-     ddl-auto: create
+     ddl-auto: none
    show-sql: true 
  mvc:
    view:
@@ -22,8 +22,8 @@ spring:
      matching-strategy: ANT_PATH_MATCHER
 
 # server:
-#   port: 9999
-    
+#   port: 8080
+#    
 # spring:
 #   datasource:
 #     driver-class-name: com.mysql.cj.jdbc.Driver
