@@ -1,6 +1,8 @@
 package com.woori.dto.order;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
@@ -26,10 +28,8 @@ public class OrderListDto {
     private BigDecimal deposit;
 	private int commission = 2000;	//청약수수료 : 2000원으로 통일
     private long orderId;
-    private Date orderDate;
+    private LocalDateTime orderDate; //Date gpt의 추천
 	private int corpCode;
     private String corpName;
-
-
 
 }

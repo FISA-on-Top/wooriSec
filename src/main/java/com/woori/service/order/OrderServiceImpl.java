@@ -1,6 +1,8 @@
 package com.woori.service.order;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -140,20 +142,34 @@ public class OrderServiceImpl implements OrderService {
 	
 	//청약 결과 조회/취소 - 신청결과조회 서비스
 	@Override
-	public OrderListDto getOrderList(Long userId) {
+	public List<OrderListDto> getOrderList(String userId, LocalDate date) {
+//		System.out.println("------------------------- " + date);
 		
-////		Optional<OrderListDto> orderList = Optional<OrderListDto>;
-////		orderList = orderRepository.findById(userId);
-//		Optional<OrderListDto> orderList = orderRepository.findAllById(userId);
-//		if(!orderList.isPresent()) {
-//			new EntityNotFoundException("Order not found for user ID: " + userId);
-//		}
-//		
-//		return orderList.get();
+		List<Orders> orders = orderRepository.findByUserIdAndOrderDate(userId, date);
 		
-		return null;
+		if(orders == null || orders.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"); // 포맷터 생성
+		
+		return orders.stream().map(order -> {
+			Ipo ipo = order.getIpo();
+			OrderListDto orderListDto = new OrderListDto();
+			orderListDto.setStatus(order.getStatus()); //status
+			orderListDto.setOrderAmount(order.getOrderAmount()); //orderAmount
+			orderListDto.setCorpCls(ipo.getCorpCls());//corpCls
+			//subscriptionClassification "상장" 프론트처리
+			orderListDto.setDeposit(order.getDeposit());//deposit
+			//commission = 2000 고정
+			orderListDto.setOrderId(order.getOrderId());//orderId
+			orderListDto.setOrderDate(order.getOrderDate());//orderDate
+			orderListDto.setCorpCode(ipo.getCorpCode());//corpCode
+			orderListDto.setCorpName(ipo.getCorpName());//corpName
+			return orderListDto;
+			
+		}).collect(Collectors.toList());
 	//orderRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Order not found for user ID: " + userId));
-
 	}
 	
 	
