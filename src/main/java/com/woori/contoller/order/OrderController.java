@@ -49,13 +49,7 @@ public class OrderController {
 			@RequestParam(value = "date", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate sbd, 
 			@RequestParam(value = "index", required = false) int index) {
 		
-		List<OrderableDto> orderableDtos = orderService.getIposInfo(sbd);
-		
-		//페이지인덱스에 맞춰서 list 일부 데이터만 가져오는 로직 작업 필요 
-		int totalpage = 1;
-		int currentpage = 1;
-		
-		return ResponseEntity.ok(APIResponse.success(OrdersResponseDto.responseData(totalpage, currentpage, orderableDtos)));
+		return ResponseEntity.ok(APIResponse.success(orderService.getIposInfo(sbd, index)));
 	}
 
 	// 사용자 아이디 request header로 받아 해당 아이디에 대한 계좌번호 리턴(청약하기 버튼 클릭)

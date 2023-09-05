@@ -2,6 +2,9 @@ package com.woori.domain.ipo;
 
 import java.time.LocalDate;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -13,5 +16,7 @@ public interface IpoRepository extends JpaRepository<Ipo, Long> {
 	Ipo findById = null;
 
 	//날짜에 따라 가능한 공모주 조회
-	List<Ipo> findBySbd(LocalDate date);
+	//List<Ipo> findBySbd(LocalDate date);
+	
+	Page<Ipo> findBySbd(LocalDate sbd, Pageable pageable);
 }

@@ -11,6 +11,7 @@ import com.woori.dto.order.OrderInfoDto;
 import com.woori.dto.order.OrderListDto;
 import com.woori.dto.order.OrderApprovalRequestDto;
 import com.woori.dto.order.OrderableDto;
+import com.woori.dto.order.OrdersResponseDto;
 
 public interface OrderService {
 
@@ -18,7 +19,7 @@ public interface OrderService {
 //	OrderDto createOrder(OrderDto orderDto);
     
     //신청 가능 공모주 모두 조회
-    public List<OrderableDto> getIposInfo(LocalDate date);
+    public OrdersResponseDto getIposInfo(LocalDate date, int index);
 	
     //유저아이디 입력시 해당 계좌 정보 출력
     public OrderAccountDto getAccountByUserId(String accountNum);
