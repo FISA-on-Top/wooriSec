@@ -2,6 +2,7 @@ package com.woori.contoller.login;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.woori.domain.entity.User;
@@ -19,9 +20,9 @@ public class LoginController {
 	private UserService userService;
 
 	// login 처리 메소드
-	@PostMapping("loginauth")
-	public LoginResponseDto login(LoginRequestDto user) {
-
+	@PostMapping("/loginauth")
+	public LoginResponseDto login(@RequestBody LoginRequestDto user) {
+		
 		User u = userService.login(user);
 		
 		//null이 아닌 경우 id 값을 json 형식으로 응답 
