@@ -21,7 +21,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class OrderRequestDto {
+public class OrderApprovalRequestDto {
 
     private Long ipoId;
     private int orderAmount;

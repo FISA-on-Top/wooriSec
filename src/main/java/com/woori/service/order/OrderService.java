@@ -9,7 +9,7 @@ import com.woori.dto.order.OrderAccountVerifyDto;
 import com.woori.dto.order.OrderCancelDto;
 import com.woori.dto.order.OrderInfoDto;
 import com.woori.dto.order.OrderListDto;
-import com.woori.dto.order.OrderRequestDto;
+import com.woori.dto.order.OrderApprovalRequestDto;
 import com.woori.dto.order.OrderableDto;
 
 public interface OrderService {
@@ -29,7 +29,7 @@ public interface OrderService {
 	//유저 잔액조회
     
     //청약정보 입력 후 다음버튼 클릭 -> 청약 정보
-    public OrderInfoDto setOrderInfo(OrderRequestDto orderRequestDto);
+    public OrderInfoDto setOrderInfo(OrderApprovalRequestDto orderApprovalRequestDto);
     
     //userId입력 시 신청결과 조회 
 //    public OrderListDto getOrderList(Long userId);
