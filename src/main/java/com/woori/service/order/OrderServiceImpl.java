@@ -12,6 +12,9 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -23,12 +26,15 @@ import com.woori.domain.entity.User;
 import com.woori.domain.ipo.IpoRepository;
 import com.woori.domain.order.OrderRepository;
 import com.woori.domain.user.UserRepository;
+import com.woori.dto.account.VerifyRequestDto;
 import com.woori.dto.order.OrderAccountDto;
+import com.woori.dto.order.OrderAccountVerifyDto;
 import com.woori.dto.order.OrderCancelDto;
 import com.woori.dto.order.OrderInfoDto;
 import com.woori.dto.order.OrderListDto;
-import com.woori.dto.order.OrderRequestDto;
+import com.woori.dto.order.OrderApprovalRequestDto;
 import com.woori.dto.order.OrderableDto;
+import com.woori.dto.order.OrdersResponseDto;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -52,20 +58,24 @@ public class OrderServiceImpl implements OrderService {
     
     //일자별 주문가능한 종목 조회
     @Override
-    public List<OrderableDto> getIposInfo(LocalDate date) {
-    	List<Ipo> ipos = ipoRepository.findBySbd(date);
+    public OrdersResponseDto getIposInfo(LocalDate date, int index) {
+    	Pageable pageable = PageRequest.of(index - 1, 10);
+    	
+    	Page<Ipo> pageIpo = ipoRepository.findBySbd(date,pageable);
+    	
+    	List<OrderableDto> ipos = pageIpo.getContent().stream().map(ipo -> {
+    	    OrderableDto dto = new OrderableDto();
+    	    dto.setIpoId(ipo.getIpoId());
+    	    dto.setCorpCls(ipo.getCorpCls());
+    	    dto.setCorpName(ipo.getCorpName());
+    	    dto.setSbd(ipo.getSbd());
+    	    dto.setRefund(ipo.getRefund());
+    	    dto.setSlprc(ipo.getSlprc());
 
-        return ipos.stream().map(ipo -> {
-            OrderableDto dto = new OrderableDto();
-            dto.setIpoId(ipo.getIpoId());
-            dto.setCorpCls(ipo.getCorpCls());
-            dto.setCorpName(ipo.getCorpName());
-            dto.setSbd(ipo.getSbd());
-            dto.setRefund(ipo.getRefund());
-            dto.setSlprc(ipo.getSlprc());
-
-            return dto;
-        }).collect(Collectors.toList());
+    	    return dto;
+    	}).collect(Collectors.toList());
+    	
+    	return OrdersResponseDto.responseData(pageIpo.getTotalPages(), pageIpo.getNumber()+1, ipos);
     }
     
     //유저아이디 입력시 계좌번호 리턴
@@ -79,13 +89,13 @@ public class OrderServiceImpl implements OrderService {
 	
 	//청약 정보 입력 > ‘다음’ 버튼 클릭
 	@Override
-	public OrderInfoDto setOrderInfo(OrderRequestDto orderRequestDto) {
+	public OrderInfoDto setOrderInfo(OrderApprovalRequestDto orderApprovalRequestDto) {
 		
 		String userId = "유저임";
 		User user = userRepository.findById(userId).orElse(null);
-		Ipo ipo = ipoRepository.findById(orderRequestDto.getIpoId()).get();
+		Ipo ipo = ipoRepository.findById(orderApprovalRequestDto.getIpoId()).get();
 		
-		Orders orders = new Orders(orderRequestDto, userId);
+		Orders orders = new Orders(orderApprovalRequestDto, userId);
 		orders.setUser(user);
 		orders.setIpo(ipo);
 		
@@ -103,17 +113,17 @@ public class OrderServiceImpl implements OrderService {
 	        orderInfoDto.setIpoId(ipoTemp.getIpoId()); //IpoId
 	        orderInfoDto.setName("Account_Name");//accountName 청약계좌 소유자 명 -- String
 	        orderInfoDto.setCorpName(ipo.getCorpName()); //종목명
-	        orderInfoDto.setOrderAmount(orderRequestDto.getOrderAmount());//청약 주수
+	        orderInfoDto.setOrderAmount(orderApprovalRequestDto.getOrderAmount());//청약 주수
 	        orderInfoDto.setSlprc(ipoTemp.getSlprc());//공모가(확정 발행가) 
-	        orderInfoDto.setDeposit(orderRequestDto.getDeposit()); //증거금(deposit) Orders테이블
-	        orderInfoDto.setPhoneNum(orderRequestDto.getPhoneNum());
+	        orderInfoDto.setDeposit(orderApprovalRequestDto.getDeposit()); //증거금(deposit) Orders테이블
+	        orderInfoDto.setPhoneNum(orderApprovalRequestDto.getPhoneNum());
 	        orderInfoDto.setRefund(ipoTemp.getRefund());//환불일 
 	        orderInfoDto.setPymd(ipoTemp.getPymd());//납입일
 	        
 	        return orderInfoDto;
 	    } else {
 	        // 해당 IPO 정보가 없는 경우
-	        throw new EntityNotFoundException("IPO with id " + orderRequestDto.getIpoId() + " not found.");
+	        throw new EntityNotFoundException("IPO with id " + orderApprovalRequestDto.getIpoId() + " not found.");
 	    }
 	}
 	
@@ -191,5 +201,6 @@ public class OrderServiceImpl implements OrderService {
 		e.printStackTrace();
 		return "Service 예외발생";
 	}
+
 	
 }
