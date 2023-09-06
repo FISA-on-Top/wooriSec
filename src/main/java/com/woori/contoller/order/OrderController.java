@@ -18,13 +18,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.woori.dto.APIResponse;
+import com.woori.dto.account.VerifyRequestDto;
 import com.woori.dto.order.OrderAccountDto;
+import com.woori.dto.order.OrderAccountVerifyDto;
+import com.woori.dto.order.OrderApprovalRequestDto;
 import com.woori.dto.order.OrderCancelDto;
 import com.woori.dto.order.OrderInfoDto;
 import com.woori.dto.order.OrderListDto;
-import com.woori.dto.order.OrderRequestDto;
-import com.woori.dto.order.OrderableDto;
-import com.woori.service.order.OrderServiceImpl;
+import com.woori.dto.order.OrdersResponseDto;
+import com.woori.service.order.OrderService;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -35,7 +38,7 @@ import io.swagger.annotations.ApiResponses;
 public class OrderController {
 
 	@Autowired
-	private OrderServiceImpl orderService;
+	private OrderService orderService;
 
 	@ApiOperation(value = "종목 조회", notes = "API 설명 부분 : ipo 종목 조회")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), 
@@ -44,17 +47,19 @@ public class OrderController {
 
 	// 해당 일자 클릭 시 해당 일자 신청 가능한 공모주 조회
 	@GetMapping
-	public ResponseEntity<List<OrderableDto>> getAllIpoDetails(
-			@RequestParam(value = "date", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate sbd) {
-		List<OrderableDto> orderableDtos = orderService.getIposInfo(sbd);
-		return ResponseEntity.ok(orderableDtos);
+	public ResponseEntity<APIResponse<OrdersResponseDto>> getAllIpoDetails(
+			@RequestParam(value = "date", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate sbd, 
+			@RequestParam(value = "index", required = false) int index) {
+		
+		return ResponseEntity.ok(APIResponse.success(orderService.getIposInfo(sbd, index)));
 	}
 
 	// 사용자 아이디 request header로 받아 해당 아이디에 대한 계좌번호 리턴(청약하기 버튼 클릭)
 	@GetMapping("/account")
-	public ResponseEntity<OrderAccountDto> getAccountInfo(@RequestHeader String userId) throws Exception {
+	public ResponseEntity<APIResponse<OrderAccountDto>> getAccountInfo(@RequestHeader String userId) throws Exception {
 		OrderAccountDto accountDto = orderService.getAccountByUserId(userId);
-		return ResponseEntity.ok(accountDto);
+		
+		return ResponseEntity.ok(APIResponse.success(accountDto));
 	}
 
 	// 청약 정보 입력 > 청약계좌 선택 > 계좌 비밀번호 [확인]버튼
@@ -63,10 +68,9 @@ public class OrderController {
 	// 청약 정보 입력 > ‘다음’ 버튼 클릭
 	// 중간에 바뀔 수도??
 	@PostMapping("/approval")
-	public ResponseEntity<OrderInfoDto> OrderInfo(@RequestBody OrderRequestDto orderRequestDto) throws Exception {
-		OrderInfoDto orderInfoDto = orderService.setOrderInfo(orderRequestDto);
-		return ResponseEntity.ok(orderInfoDto);
-
+	public ResponseEntity<APIResponse<OrderInfoDto>> OrderInfo(@RequestBody OrderApprovalRequestDto RequestDto) throws Exception {
+		OrderInfoDto orderInfoDto = orderService.setOrderInfo(RequestDto);
+		return ResponseEntity.ok(APIResponse.success(orderInfoDto));
 	}
 
 	// 청약 결과 조회/취소 - 신청 결과 조회
@@ -85,6 +89,7 @@ public class OrderController {
 	// 청약 결과 조회/취소 - ‘실행’ 버튼 클릭
 	@DeleteMapping("/cancel")
 //	public ResponseEntity<OrderCancelDto> cancelOrder(
+//	public ResponseEntity<APIResponse<?>> cancelOrder(
 	public ResponseEntity<?> cancelOrder(
 			@RequestHeader String accountNum,
 			@RequestHeader String accountPw,
@@ -94,10 +99,13 @@ public class OrderController {
 			Long orderId = requestBody.get("orderId");
 			OrderCancelDto orderCancelDto = orderService.getCancelOrder(accountNum, accountPw, orderId);
 			
-			return new ResponseEntity<>(orderCancelDto, HttpStatus.OK);
+//			return new ResponseEntity.ok(APIResponse.success(orderCancelDto));
+			return new ResponseEntity<>((APIResponse.success(orderCancelDto)), HttpStatus.OK);
 			
 		} catch(IllegalArgumentException e) {
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+			
+//			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
 	}

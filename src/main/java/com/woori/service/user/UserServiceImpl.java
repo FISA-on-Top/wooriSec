@@ -1,13 +1,20 @@
 package com.woori.service.user;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.woori.domain.entity.User;
 import com.woori.domain.user.UserRepository;
+import com.woori.dto.user.AlluserInfoResponseDto;
 import com.woori.dto.user.LoginRequestDto;
+import com.woori.dto.user.UserInfoDto;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -31,7 +38,29 @@ public class UserServiceImpl implements UserService {
        return optionalUser.get();
 
     }
-
+    
+    public AlluserInfoResponseDto getAlluserInfo(int index){
+    	Pageable pageable = PageRequest.of(index - 1, 10);
+    	
+    	Page<User> pageUser = userRepository.findAll(pageable);
+    	
+    	System.out.println(pageUser.getContent());
+    	
+    	List<UserInfoDto> dtos =pageUser.getContent().stream()
+    			.map(user ->{
+    				UserInfoDto dto = new UserInfoDto();
+    				dto.setUserName(user.getUserName());
+    				dto.setBirth(user.getBirth());
+    				dto.setUserId(user.getUserId());
+    				dto.setAccountNum(user.getAccountNum());
+    				dto.setCreatedAt(user.getCreatedAt());
+    				
+    				return dto;
+    			}).collect(Collectors.toList());
+    	
+    	return AlluserInfoResponseDto.responseData(pageUser.getTotalPages(), pageUser.getNumber()+1, dtos);
+    }
+    
     /**
      * userId(Long)를 입력받아 User을 return 해주는 기능
      * 인증, 인가 시 사용

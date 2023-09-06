@@ -18,7 +18,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-
 public class OrderListDto {
     
 	private String status;
