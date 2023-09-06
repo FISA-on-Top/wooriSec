@@ -36,5 +36,5 @@ public interface OrderService {
     public List<OrderListDto> getOrderList(String userId, LocalDate date);
     
     //청약결과 조회/취소 - '실행'버튼 클릭
-    public OrderCancelDto getcancelOrder(String accountNum, String Pw);
+    public OrderCancelDto getCancelOrder(String accountNum, String accountPw, Long orderId);
 }

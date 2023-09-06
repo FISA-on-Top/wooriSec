@@ -1,5 +1,6 @@
 package com.woori.service.order;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,10 @@ import com.woori.dto.order.OrderableDto;
 
 @Service
 public class OrderServiceImpl implements OrderService {
+	
+	//취소 수수료
+	private static final BigDecimal CANCEL_FEE = new BigDecimal("2000");
+
 	
 	//@Autowired로 필요한 레포지토리 주입받음
     @Autowired
@@ -76,7 +82,7 @@ public class OrderServiceImpl implements OrderService {
 	//계좌에 맞는 비밀번호 입력시 청약계좌선택란에 정보 제공 - 수정중
 	@Override
 	public OrderAccountVerifyDto getOrderableInfo(VerifyRequestDto requestDto) {
-        Account account = accountRepository.findByAccountNumAndAccountPw(requestDto.getAccountNum(), requestDto.getAccountPw());
+        Optional<Account> account = accountRepository.findByAccountNumAndAccountPw(requestDto.getAccountNum(), requestDto.getAccountPw());
         
         
         if (account == null) {
@@ -143,15 +149,12 @@ public class OrderServiceImpl implements OrderService {
 	//청약 결과 조회/취소 - 신청결과조회 서비스
 	@Override
 	public List<OrderListDto> getOrderList(String userId, LocalDate date) {
-//		System.out.println("------------------------- " + date);
 		
 		List<Orders> orders = orderRepository.findByUserIdAndOrderDate(userId, date);
 		
 		if(orders == null || orders.isEmpty()) {
 			return new ArrayList<>();
 		}
-		
-//		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"); // 포맷터 생성
 		
 		return orders.stream().map(order -> {
 			Ipo ipo = order.getIpo();
@@ -169,15 +172,46 @@ public class OrderServiceImpl implements OrderService {
 			return orderListDto;
 			
 		}).collect(Collectors.toList());
-	//orderRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Order not found for user ID: " + userId));
 	}
 	
 	
 	//청약결과 조회/취소 - '실행'버튼 클릭
 	@Override
-	public OrderCancelDto getcancelOrder(String accountNum, String Pw) {
+	@Transactional
+	public OrderCancelDto getCancelOrder(String accountNum, String accountPw, Long orderId) {
+		// 1. 계좌 정보 조회
+        Account account = accountRepository.findByAccountNumAndAccountPw(accountNum, accountPw)
+                .orElseThrow(() -> new EntityNotFoundException("Account not found"));
+
+        // 2. 주문 정보 조회
+        Orders order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException("Order not found"));
+        
+        if(order.getCancleDate() != null) {
+        	throw new IllegalArgumentException("주문이 이미 취소되었습니다.");
+        }
+        // 3. 청약 취소 및 잔고 계산
+        BigDecimal updatedBalance = account.getBalance().add(order.getDeposit().subtract(CANCEL_FEE));
+        account.setBalance(updatedBalance);
+        accountRepository.save(account);
+
+        // 4. 주문 취소 날짜 업데이트
+        order.setCancleDate(LocalDateTime.now());
+        order.setStatus("Cancelled");
+        orderRepository.save(order);
+        
 		
-		return new OrderCancelDto();
+		OrderCancelDto orderCancelDto = new OrderCancelDto();
+        orderCancelDto.setBalance(updatedBalance);
+        orderCancelDto.setOrderAmount(order.getOrderAmount());
+        orderCancelDto.setCorpCls(order.getIpo().getCorpCls());
+        orderCancelDto.setDeposit(order.getDeposit());
+        orderCancelDto.setOrderId(order.getOrderId());
+        orderCancelDto.setCancelDate(order.getCancleDate());
+        orderCancelDto.setCorpCode(order.getIpo().getCorpCode());
+        orderCancelDto.setCorpName(order.getIpo().getCorpName());
+		
+		return orderCancelDto;
 	}
 	
 	@ExceptionHandler

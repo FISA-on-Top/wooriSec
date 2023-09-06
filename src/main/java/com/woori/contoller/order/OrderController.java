@@ -1,13 +1,14 @@
 package com.woori.contoller.order;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -83,17 +84,24 @@ public class OrderController {
         return new ResponseEntity<>(orderList, HttpStatus.OK);
     }
 
-	// 청약 결과 조회/취소 - ‘취소’ 버튼 클릭
-//	@GETMapping("/{userId})
-
 	// 청약 결과 조회/취소 - ‘실행’ 버튼 클릭
-	@GetMapping("/cancel")
-	public ResponseEntity<OrderCancelDto> cancelOrder(
-			@RequestHeader(value = "AccountNum", required = false) String accountNum,
-			@RequestHeader(value = "AccountPw", required = false) String accountPw){
-		OrderCancelDto orderCancelDto = orderService.getcancelOrder(accountNum, accountPw);
-
-		return ResponseEntity.ok(orderCancelDto);
+	@DeleteMapping("/cancel")
+//	public ResponseEntity<OrderCancelDto> cancelOrder(
+	public ResponseEntity<?> cancelOrder(
+			@RequestHeader String accountNum,
+			@RequestHeader String accountPw,
+			@RequestBody Map<String, Long> requestBody){
+		
+		try {
+			Long orderId = requestBody.get("orderId");
+			OrderCancelDto orderCancelDto = orderService.getCancelOrder(accountNum, accountPw, orderId);
+			
+			return new ResponseEntity<>(orderCancelDto, HttpStatus.OK);
+			
+		} catch(IllegalArgumentException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		
 	}
 	
 	//청약 정보 입력 > 청약계좌 선택 > 계좌 비밀번호 확인버튼
