@@ -1,22 +1,45 @@
 server:
-  port: 8080
+ port: 8080
 
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    password: root
-    url: jdbc:mysql://localhost/woori?characterEncoding=UTF-8
-    username: root
-  jpa:
-    database: mysql
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-    generate-ddl: false
-    hibernate:
-      ddl-auto: none
-    show-sql: true 
-  mvc:
-    view:
-      prefix: /WEB-INF/
-      suffix: .jsp
-    pathmatch:
-      matching-strategy: ANT_PATH_MATCHER
+ datasource:
+   driver-class-name: com.mysql.cj.jdbc.Driver
+   url: jdbc:mysql://devdb.ca5o3ouzfrpj.ap-northeast-2.rds.amazonaws.com/woori?characterEncoding=UTF-8
+   username: root
+   password: rootroot
+ jpa:
+   database: mysql
+   database-platform: org.hibernate.dialect.MySQL8Dialect
+   generate-ddl: false
+   hibernate:
+     ddl-auto: none
+   show-sql: true 
+ mvc:
+   view:
+     prefix: /WEB-INF/
+     suffix: .jsp
+   pathmatch:
+     matching-strategy: ANT_PATH_MATCHER
+
+# server:
+#   port: 8080
+#    
+# spring:
+#   datasource:
+#     driver-class-name: com.mysql.cj.jdbc.Driver
+#     url: jdbc:mysql://localhost/woori?characterEncoding=UTF-8
+#     username: root
+#     password: root
+#   jpa:
+#     database: mysql
+#     database-platform: org.hibernate.dialect.MySQL8Dialect
+#     generate-ddl: false 
+#     hibernate:
+#       ddl-auto: none
+#     show-sql: true 
+#   mvc:
+#     view:
+#       prefix: /WEB-INF/
+#       suffix: .jsp
+#     pathmatch:
+#       matching-strategy: ANT_PATH_MATCHER      

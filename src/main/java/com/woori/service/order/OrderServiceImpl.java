@@ -155,7 +155,7 @@ public class OrderServiceImpl implements OrderService {
 			
 		}).collect(Collectors.toList());
 	}
-	
+
 	
 	//청약결과 조회/취소 - '실행'버튼 클릭
 	@Override

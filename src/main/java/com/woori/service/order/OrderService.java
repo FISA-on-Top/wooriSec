@@ -11,9 +11,7 @@ import com.woori.dto.order.OrderCancelDto;
 import com.woori.dto.order.OrderInfoDto;
 import com.woori.dto.order.OrderListDto;
 import com.woori.dto.order.OrdersResponseDto;
-import com.woori.dto.order.OrderApprovalRequestDto;
-import com.woori.dto.order.OrderableDto;
-import com.woori.dto.order.OrdersResponseDto;
+
 
 public interface OrderService {
 
@@ -37,6 +35,7 @@ public interface OrderService {
     
     //userId입력 시 신청결과 조회 
     public List<OrderListDto> getOrderList(String userId, LocalDate date);
+
     
     //청약결과 조회/취소 - '실행'버튼 클릭
     public OrderCancelDto getCancelOrder(String accountNum, String accountPw, Long orderId);

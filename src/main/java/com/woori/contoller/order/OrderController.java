@@ -26,8 +26,6 @@ import com.woori.dto.order.OrderApprovalRequestDto;
 import com.woori.dto.order.OrderCancelDto;
 import com.woori.dto.order.OrderInfoDto;
 import com.woori.dto.order.OrderListDto;
-import com.woori.dto.order.OrdersResponseDto;
-import com.woori.service.order.OrderService;
 import com.woori.dto.order.OrderApprovalRequestDto;
 import com.woori.dto.order.OrdersResponseDto;
 import com.woori.dto.order.OrderableDto;
@@ -113,9 +111,6 @@ public class OrderController {
 		}
 		
 	}
-	
-	//청약 정보 입력 > 청약계좌 선택 > 계좌 비밀번호 확인버튼
-
 	
 	//예외처리
 	@ExceptionHandler
