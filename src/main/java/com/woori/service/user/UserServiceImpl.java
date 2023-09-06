@@ -14,6 +14,7 @@ import com.woori.domain.entity.User;
 import com.woori.domain.user.UserRepository;
 import com.woori.dto.user.AlluserInfoResponseDto;
 import com.woori.dto.user.LoginRequestDto;
+import com.woori.dto.user.MypageInfoDto;
 import com.woori.dto.user.UserInfoDto;
 
 @Service
@@ -61,6 +62,25 @@ public class UserServiceImpl implements UserService {
     	return AlluserInfoResponseDto.responseData(pageUser.getTotalPages(), pageUser.getNumber()+1, dtos);
     }
     
+    public MypageInfoDto getUserInfoById(String id) {
+    	Optional<User> optionalUser = userRepository.findById(id);
+   
+    	
+    	if(!optionalUser.isPresent()) {
+    		return null;
+    	}
+    	else {
+    	   	MypageInfoDto dto = new MypageInfoDto();
+    	   	User user = optionalUser.get();
+    	   	dto.setUserName(user.getUserName());
+    	   	dto.setUserId(user.getUserId());
+    	   	dto.setBirth(user.getBirth());
+    	   	dto.setPhoneNum(user.getPhoneNum());
+    	   	dto.setEmail(user.getEmail());
+    	   	dto.setAccountNum(user.getAccountNum());
+    		return dto;
+    	}
+    }
     /**
      * userId(Long)를 입력받아 User을 return 해주는 기능
      * 인증, 인가 시 사용
