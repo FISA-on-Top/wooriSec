@@ -29,4 +29,7 @@ public class APIResponse<T> {
     public static <T>APIResponse<T> failbyDataFormat(T response){
     	return new APIResponse<>("1002","Invalid data format",response);
     }
+    public static <T>APIResponse<T> failbyRequest(T response){
+    	return new APIResponse<>("1003","Invalid Request",response);
+    }
 }

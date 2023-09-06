@@ -19,16 +19,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.woori.dto.APIResponse;
-import com.woori.dto.account.VerifyRequestDto;
 import com.woori.dto.order.OrderAccountDto;
-import com.woori.dto.order.OrderAccountVerifyDto;
 import com.woori.dto.order.OrderApprovalRequestDto;
 import com.woori.dto.order.OrderCancelDto;
 import com.woori.dto.order.OrderInfoDto;
 import com.woori.dto.order.OrderListDto;
-import com.woori.dto.order.OrderApprovalRequestDto;
 import com.woori.dto.order.OrdersResponseDto;
-import com.woori.dto.order.OrderableDto;
 import com.woori.service.order.OrderService;
 
 import io.swagger.annotations.ApiOperation;
@@ -77,15 +73,13 @@ public class OrderController {
 
 	// 청약 결과 조회/취소 - 신청 결과 조회
     @GetMapping("/list")
-    public ResponseEntity<List<OrderListDto>> getOrderInfo(
+    public ResponseEntity<APIResponse<List<OrderListDto>>> getOrderInfo(
     		@RequestHeader String userId, 
     		@RequestParam("date") 
     		@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) throws Exception {
         List<OrderListDto> orderList = orderService.getOrderList(userId, date);
-        if (orderList.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(orderList, HttpStatus.OK);
+
+        return ResponseEntity.ok(APIResponse.success(orderList));
     }
 
 	// 청약 결과 조회/취소 - ‘실행’ 버튼 클릭
@@ -107,7 +101,8 @@ public class OrderController {
 		} catch(IllegalArgumentException e) {
 			
 //			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//			String s = e.getMessage();
+			return new ResponseEntity<>(APIResponse.failbyRequest(e.getMessage()), HttpStatus.BAD_REQUEST);
 		}
 		
 	}
