@@ -14,7 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.woori.dto.order.OrderRequestDto;
+import com.woori.dto.order.OrderApprovalRequestDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -66,13 +66,13 @@ public class Orders {
 	private BigDecimal deposit;	//청약증거금
     
     //서비스로 메서드 하나 옮긴 후 지우면 good
-    public Orders(OrderRequestDto orderRequestDto, String userId) {
-    	this.orderAmount = orderRequestDto.getOrderAmount();//orderAmount
+    public Orders(OrderApprovalRequestDto orderApprovalRequestDto, String userId) {
+    	this.orderAmount = orderApprovalRequestDto.getOrderAmount();//orderAmount
     	this.status = "";//status
-    	this.orderDate = orderRequestDto.getOrderDate();//orderDate
+    	this.orderDate = orderApprovalRequestDto.getOrderDate();//orderDate
     	this.cancleDate = null;//cancelDate
-    	this.phoneNum = orderRequestDto.getPhoneNum();//phoneNum
-    	this.deposit = orderRequestDto.getDeposit();//deposit
+    	this.phoneNum = orderApprovalRequestDto.getPhoneNum();//phoneNum
+    	this.deposit = orderApprovalRequestDto.getDeposit();//deposit
     }
 
 }

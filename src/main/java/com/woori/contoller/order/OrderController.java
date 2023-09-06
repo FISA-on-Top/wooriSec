@@ -16,13 +16,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.woori.dto.APIResponse;
 import com.woori.dto.account.VerifyRequestDto;
 import com.woori.dto.order.OrderAccountDto;
 import com.woori.dto.order.OrderAccountVerifyDto;
 import com.woori.dto.order.OrderCancelDto;
 import com.woori.dto.order.OrderInfoDto;
 import com.woori.dto.order.OrderListDto;
-import com.woori.dto.order.OrderRequestDto;
+import com.woori.dto.order.OrderApprovalRequestDto;
+import com.woori.dto.order.OrdersResponseDto;
 import com.woori.dto.order.OrderableDto;
 import com.woori.service.order.OrderService;
 
@@ -43,17 +45,19 @@ public class OrderController {
 
 	// 해당 일자 클릭 시 해당 일자 신청 가능한 공모주 조회
 	@GetMapping
-	public ResponseEntity<List<OrderableDto>> getAllIpoDetails(
-			@RequestParam(value = "date", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate sbd) {
-		List<OrderableDto> orderableDtos = orderService.getIposInfo(sbd);
-		return ResponseEntity.ok(orderableDtos);
+	public ResponseEntity<APIResponse<OrdersResponseDto>> getAllIpoDetails(
+			@RequestParam(value = "date", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate sbd, 
+			@RequestParam(value = "index", required = false) int index) {
+		
+		return ResponseEntity.ok(APIResponse.success(orderService.getIposInfo(sbd, index)));
 	}
 
 	// 사용자 아이디 request header로 받아 해당 아이디에 대한 계좌번호 리턴(청약하기 버튼 클릭)
 	@GetMapping("/account")
-	public ResponseEntity<OrderAccountDto> getAccountInfo(@RequestHeader String userId) throws Exception {
+	public ResponseEntity<APIResponse<OrderAccountDto>> getAccountInfo(@RequestHeader String userId) throws Exception {
 		OrderAccountDto accountDto = orderService.getAccountByUserId(userId);
-		return ResponseEntity.ok(accountDto);
+		
+		return ResponseEntity.ok(APIResponse.success(accountDto));
 	}
 
 	// 청약 정보 입력 > 청약계좌 선택 > 계좌 비밀번호 [확인]버튼
@@ -62,10 +66,9 @@ public class OrderController {
 	// 청약 정보 입력 > ‘다음’ 버튼 클릭
 	// 중간에 바뀔 수도??
 	@PostMapping("/approval")
-	public ResponseEntity<OrderInfoDto> OrderInfo(@RequestBody OrderRequestDto orderRequestDto) throws Exception {
-		OrderInfoDto orderInfoDto = orderService.setOrderInfo(orderRequestDto);
-		return ResponseEntity.ok(orderInfoDto);
-
+	public ResponseEntity<APIResponse<OrderInfoDto>> OrderInfo(@RequestBody OrderApprovalRequestDto RequestDto) throws Exception {
+		OrderInfoDto orderInfoDto = orderService.setOrderInfo(RequestDto);
+		return ResponseEntity.ok(APIResponse.success(orderInfoDto));
 	}
 
 	// 청약 결과 조회/취소 - 신청 결과 조회
@@ -80,26 +83,27 @@ public class OrderController {
 
 	// 청약 결과 조회/취소 - ‘실행’ 버튼 클릭
 	@GetMapping("/cancel")
-	public ResponseEntity<OrderCancelDto> cancelOrder(
+	public ResponseEntity<APIResponse<OrderCancelDto>> cancelOrder(
 			@RequestHeader(value = "AccountNum", required = false) String accountNum,
 			@RequestHeader(value = "AccountPw", required = false) String accountPw){
 		OrderCancelDto orderCancelDto = orderService.getcancelOrder(accountNum, accountPw);
 
-		return ResponseEntity.ok(orderCancelDto);
+		return ResponseEntity.ok(APIResponse.success(orderCancelDto));
 	}
 	
 	//청약 정보 입력 > 청약계좌 선택 > 계좌 비밀번호 확인버튼
 	@GetMapping("/account/verify")
-	public ResponseEntity<?> verifyAccount(
+	public ResponseEntity<APIResponse<?>> verifyAccount(
 			@RequestHeader VerifyRequestDto dto) {
 
 		OrderAccountVerifyDto verifyDto = orderService.getOrderableInfo(dto);
 		
 		if (verifyDto != null) {
-            return ResponseEntity.ok(verifyDto);
+            return ResponseEntity.ok(APIResponse.success(verifyDto));
         } else {
         	//인증 실패
-            return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다");
+            //return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다");
+        	return ResponseEntity.ok(APIResponse.failbyValidation("비밀번호가 일치하지 않습니다."));
         }
 	}
 	
