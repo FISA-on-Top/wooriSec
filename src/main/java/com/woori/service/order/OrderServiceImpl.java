@@ -23,9 +23,7 @@ import com.woori.domain.entity.User;
 import com.woori.domain.ipo.IpoRepository;
 import com.woori.domain.order.OrderRepository;
 import com.woori.domain.user.UserRepository;
-import com.woori.dto.account.VerifyRequestDto;
 import com.woori.dto.order.OrderAccountDto;
-import com.woori.dto.order.OrderAccountVerifyDto;
 import com.woori.dto.order.OrderCancelDto;
 import com.woori.dto.order.OrderInfoDto;
 import com.woori.dto.order.OrderListDto;
@@ -78,32 +76,6 @@ public class OrderServiceImpl implements OrderService {
         return new OrderAccountDto(user.getAccountNum());
 		
 	}
-
-	//계좌에 맞는 비밀번호 입력시 청약계좌선택란에 정보 제공 - 수정중
-	@Override
-	public OrderAccountVerifyDto getOrderableInfo(VerifyRequestDto requestDto) {
-        Optional<Account> account = accountRepository.findByAccountNumAndAccountPw(requestDto.getAccountNum(), requestDto.getAccountPw());
-        
-        
-        if (account == null) {
-            return null;  // 계좌 정보가 없거나 비밀번호가 일치하지 않습니다.
-        }
-
-        Long ipoId = requestDto.getIpoId();
-        Optional<Ipo> ipo = ipoRepository.findById(ipoId);
-
-        
-        OrderAccountVerifyDto responseDto = new OrderAccountVerifyDto();
-        User balance = userRepository.findByBalance(responseDto.getBalance());
-        responseDto.setIpoId(requestDto.getIpoId());
-        responseDto.setBalance(responseDto.getBalance());
-        responseDto.setOrderableAmount(responseDto.getOrderableAmount());
-        responseDto.setSlprc(responseDto.getSlprc());
-
-        return responseDto;
-    }
-
-	//유저 잔액조회
 	
 	//청약 정보 입력 > ‘다음’ 버튼 클릭
 	@Override

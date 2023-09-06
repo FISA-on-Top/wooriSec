@@ -25,7 +25,7 @@ public interface OrderService {
     public OrderAccountDto getAccountByUserId(String accountNum);
 
     //계좌와 비밀번호 검증
-	public OrderAccountVerifyDto getOrderableInfo(VerifyRequestDto requestDto);
+
 	
 	//유저 잔액조회
     
