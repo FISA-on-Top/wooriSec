@@ -2,11 +2,13 @@ package com.woori.contoller.order;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,15 +19,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.woori.dto.APIResponse;
-import com.woori.dto.account.VerifyRequestDto;
 import com.woori.dto.order.OrderAccountDto;
-import com.woori.dto.order.OrderAccountVerifyDto;
+import com.woori.dto.order.OrderApprovalRequestDto;
 import com.woori.dto.order.OrderCancelDto;
 import com.woori.dto.order.OrderInfoDto;
 import com.woori.dto.order.OrderListDto;
-import com.woori.dto.order.OrderApprovalRequestDto;
 import com.woori.dto.order.OrdersResponseDto;
-import com.woori.dto.order.OrderableDto;
 import com.woori.service.order.OrderService;
 
 import io.swagger.annotations.ApiOperation;
@@ -40,8 +39,9 @@ public class OrderController {
 	private OrderService orderService;
 
 	@ApiOperation(value = "종목 조회", notes = "API 설명 부분 : ipo 종목 조회")
-	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 404, message = "404 에러 발생"),
-			@ApiResponse(code = 500, message = "500 에러 발생") })
+	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), 
+	@ApiResponse(code = 404, message = "404 에러 발생"),
+	@ApiResponse(code = 500, message = "500 에러 발생") })
 
 	// 해당 일자 클릭 시 해당 일자 신청 가능한 공모주 조회
 	@GetMapping
@@ -72,41 +72,40 @@ public class OrderController {
 	}
 
 	// 청약 결과 조회/취소 - 신청 결과 조회
-//	@GetMapping("/list")
-//	public ResponseEntity<OrderListDto> getOrderInfo(@RequestHeader String userId) throws Exception {
-//		OrderListDto orderListDto = orderService.getOrderList(userId);
-//		return ResponseEntity.ok(orderListDto);
-//	}
+    @GetMapping("/list")
+    public ResponseEntity<APIResponse<List<OrderListDto>>> getOrderInfo(
+    		@RequestHeader String userId, 
+    		@RequestParam("date") 
+    		@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) throws Exception {
+        List<OrderListDto> orderList = orderService.getOrderList(userId, date);
 
-	// 청약 결과 조회/취소 - ‘취소’ 버튼 클릭
-//	@GETMapping("/{userId})
+        return ResponseEntity.ok(APIResponse.success(orderList));
+    }
 
 	// 청약 결과 조회/취소 - ‘실행’ 버튼 클릭
-	@GetMapping("/cancel")
-	public ResponseEntity<APIResponse<OrderCancelDto>> cancelOrder(
-			@RequestHeader(value = "AccountNum", required = false) String accountNum,
-			@RequestHeader(value = "AccountPw", required = false) String accountPw){
-		OrderCancelDto orderCancelDto = orderService.getcancelOrder(accountNum, accountPw);
-
-		return ResponseEntity.ok(APIResponse.success(orderCancelDto));
-	}
-	
-	//청약 정보 입력 > 청약계좌 선택 > 계좌 비밀번호 확인버튼
-	@GetMapping("/account/verify")
-	public ResponseEntity<APIResponse<?>> verifyAccount(
-			@RequestHeader VerifyRequestDto dto) {
-
-		OrderAccountVerifyDto verifyDto = orderService.getOrderableInfo(dto);
+	@DeleteMapping("/cancel")
+//	public ResponseEntity<OrderCancelDto> cancelOrder(
+//	public ResponseEntity<APIResponse<?>> cancelOrder(
+	public ResponseEntity<?> cancelOrder(
+			@RequestHeader String accountNum,
+			@RequestHeader String accountPw,
+			@RequestBody Map<String, Long> requestBody){
 		
-		if (verifyDto != null) {
-            return ResponseEntity.ok(APIResponse.success(verifyDto));
-        } else {
-        	//인증 실패
-            //return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다");
-        	return ResponseEntity.ok(APIResponse.failbyValidation("비밀번호가 일치하지 않습니다."));
-        }
+		try {
+			Long orderId = requestBody.get("orderId");
+			OrderCancelDto orderCancelDto = orderService.getCancelOrder(accountNum, accountPw, orderId);
+			
+//			return new ResponseEntity.ok(APIResponse.success(orderCancelDto));
+			return new ResponseEntity<>((APIResponse.success(orderCancelDto)), HttpStatus.OK);
+			
+		} catch(IllegalArgumentException e) {
+			
+//			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+//			String s = e.getMessage();
+			return new ResponseEntity<>(APIResponse.failbyRequest(e.getMessage()), HttpStatus.BAD_REQUEST);
+		}
+		
 	}
-	
 	
 	//예외처리
 	@ExceptionHandler
