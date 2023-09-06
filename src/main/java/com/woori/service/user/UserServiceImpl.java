@@ -15,6 +15,7 @@ import com.woori.domain.user.UserRepository;
 import com.woori.dto.user.AlluserInfoResponseDto;
 import com.woori.dto.user.LoginRequestDto;
 import com.woori.dto.user.MypageInfoDto;
+import com.woori.dto.user.MypageUpdateRequestDto;
 import com.woori.dto.user.UserInfoDto;
 
 @Service
@@ -80,6 +81,46 @@ public class UserServiceImpl implements UserService {
     	   	dto.setAccountNum(user.getAccountNum());
     		return dto;
     	}
+    }
+    
+    public User getUserById(String id) {
+    	Optional<User> optionalUser = userRepository.findById(id);
+    	
+    	if(!optionalUser.isPresent()) {
+    		return null;
+    	}
+    	else {
+    		return optionalUser.get();
+    	}
+    }
+    
+    public MypageInfoDto updateUserInfoById(String id, MypageUpdateRequestDto requestBody) {
+    	//사용자 검증
+    	LoginRequestDto verifyUserDto = new LoginRequestDto();
+    	verifyUserDto.setUserId(id);
+    	verifyUserDto.setUserPw(requestBody.getUserPw());
+    	
+    	User user = login(verifyUserDto);
+    	
+    	if(user == null) {
+    		return null;
+    	}
+    	
+    	user.setEmail(requestBody.getEmail());
+    	user.setPhoneNum(requestBody.getPhoneNum());
+    	
+    	User updateUser = userRepository.save(user);
+    	
+    	MypageInfoDto dto = new MypageInfoDto(
+    				updateUser.getUserName(),
+    				updateUser.getUserId(),
+    				updateUser.getBirth(),
+    				updateUser.getPhoneNum(),
+    				updateUser.getEmail(),
+    				updateUser.getAccountNum()
+    			);
+    	
+    	return dto;
     }
     /**
      * userId(Long)를 입력받아 User을 return 해주는 기능

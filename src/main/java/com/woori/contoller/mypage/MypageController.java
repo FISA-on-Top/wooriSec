@@ -3,12 +3,16 @@ package com.woori.contoller.mypage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.woori.domain.entity.User;
 import com.woori.dto.APIResponse;
 import com.woori.dto.user.MypageInfoDto;
+import com.woori.dto.user.MypageUpdateRequestDto;
 import com.woori.service.user.UserService;
 
 import io.swagger.annotations.ApiOperation;
@@ -39,4 +43,18 @@ public class MypageController {
 		return ResponseEntity.ok(APIResponse.success(dto));
 	}
 
+	@PostMapping("/modify")
+	public ResponseEntity<APIResponse<?>> updateUserInfo(@RequestHeader(name = "userId")String userId, 
+														@RequestBody MypageUpdateRequestDto requestBody){
+		
+		
+		System.out.println("요청 Body 확인하자 "+ requestBody.toString());
+		MypageInfoDto dto = userService.updateUserInfoById(userId , requestBody);
+		
+		if(dto == null) {
+			return ResponseEntity.ok(APIResponse.failbyValidation("비밀번호 오류"));
+		}
+		
+		return ResponseEntity.ok(APIResponse.success(dto));
+	}
 }
