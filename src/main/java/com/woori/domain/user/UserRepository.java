@@ -16,7 +16,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 	//로그인 --- ?
 	Optional<User> findByuserId(String userId);
 	
-	//계좌조회
+	//계좌조회, 마이데이터 조회
 	Optional<User> findById(String userId);
 	
 	User findByBalance(BigDecimal balance);
