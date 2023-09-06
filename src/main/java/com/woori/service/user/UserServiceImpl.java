@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
     				dto.setUserName(user.getUserName());
     				dto.setBirth(user.getBirth());
     				dto.setUserId(user.getUserId());
-    				dto.setAccountNum(user.getAccountNum());
+    				dto.setAccountNum(user.getAccount().getAccountNum());
     				dto.setCreatedAt(user.getCreatedAt());
     				
     				return dto;
@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
     	   	dto.setBirth(user.getBirth());
     	   	dto.setPhoneNum(user.getPhoneNum());
     	   	dto.setEmail(user.getEmail());
-    	   	dto.setAccountNum(user.getAccountNum());
+    	   	dto.setAccountNum(user.getAccount().getAccountNum());
     		return dto;
     	}
     }
@@ -122,7 +122,7 @@ public class UserServiceImpl implements UserService {
     				updateUser.getBirth(),
     				updateUser.getPhoneNum(),
     				updateUser.getEmail(),
-    				updateUser.getAccountNum()
+    				updateUser.getAccount().getAccountNum()
     			);
     	
     	return dto;

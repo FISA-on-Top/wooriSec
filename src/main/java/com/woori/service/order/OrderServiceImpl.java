@@ -83,7 +83,7 @@ public class OrderServiceImpl implements OrderService {
 		User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Account not found for user id: " + userId));
 
-        return new OrderAccountDto(user.getAccountNum());
+        return new OrderAccountDto(user.getAccount().getAccountNum());
 		
 	}
 	

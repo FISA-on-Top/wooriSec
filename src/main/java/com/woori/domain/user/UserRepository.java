@@ -19,8 +19,6 @@ public interface UserRepository extends JpaRepository<User, String> {
 	//계좌조회, 마이데이터 조회
 	Optional<User> findById(String userId);
 	
-	User findByBalance(BigDecimal balance);
-	
 	//select * from user where id=? and pw=?
 	Optional<User> findByUserIdAndUserPw(String userId, String userPw);
 	
