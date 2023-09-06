@@ -6,12 +6,12 @@ import java.util.List;
 import com.woori.dto.account.VerifyRequestDto;
 import com.woori.dto.order.OrderAccountDto;
 import com.woori.dto.order.OrderAccountVerifyDto;
+import com.woori.dto.order.OrderApprovalRequestDto;
 import com.woori.dto.order.OrderCancelDto;
 import com.woori.dto.order.OrderInfoDto;
 import com.woori.dto.order.OrderListDto;
-import com.woori.dto.order.OrderApprovalRequestDto;
-import com.woori.dto.order.OrderableDto;
 import com.woori.dto.order.OrdersResponseDto;
+
 
 public interface OrderService {
 
@@ -25,7 +25,8 @@ public interface OrderService {
     public OrderAccountDto getAccountByUserId(String accountNum);
 
     //계좌와 비밀번호 검증
-	public OrderAccountVerifyDto getOrderableInfo(VerifyRequestDto requestDto);
+//    public OrderAccountVerifyDto getOrderableInfo(VerifyRequestDto requestDto);
+
 	
 	//유저 잔액조회
     
@@ -33,8 +34,10 @@ public interface OrderService {
     public OrderInfoDto setOrderInfo(OrderApprovalRequestDto orderApprovalRequestDto);
     
     //userId입력 시 신청결과 조회 
-//    public OrderListDto getOrderList(Long userId);
+    public List<OrderListDto> getOrderList(String userId, LocalDate date);
+
     
     //청약결과 조회/취소 - '실행'버튼 클릭
-    public OrderCancelDto getcancelOrder(String accountNum, String Pw);
+    public OrderCancelDto getCancelOrder(String accountNum, String accountPw, Long orderId);
+
 }
