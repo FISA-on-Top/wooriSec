@@ -1,6 +1,7 @@
 package com.woori.service.order;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,10 +30,10 @@ import com.woori.domain.user.UserRepository;
 import com.woori.dto.account.VerifyRequestDto;
 import com.woori.dto.order.OrderAccountDto;
 import com.woori.dto.order.OrderAccountVerifyDto;
+import com.woori.dto.order.OrderApprovalRequestDto;
 import com.woori.dto.order.OrderCancelDto;
 import com.woori.dto.order.OrderInfoDto;
 import com.woori.dto.order.OrderListDto;
-import com.woori.dto.order.OrderApprovalRequestDto;
 import com.woori.dto.order.OrderableDto;
 import com.woori.dto.order.OrdersResponseDto;
 
@@ -83,9 +84,44 @@ public class OrderServiceImpl implements OrderService {
 		User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Account not found for user id: " + userId));
 
-        return new OrderAccountDto(user.getAccountNum());
+        return new OrderAccountDto(user.getAccount().getAccountNum());
 		
 	}
+
+	//계좌에 맞는 비밀번호 입력시 청약계좌선택란에 정보 제공
+	@Override
+	public OrderAccountVerifyDto getOrderableInfo(VerifyRequestDto requestDto) {
+		System.out.println("---1-- " + requestDto);
+        Optional<Account> account = accountRepository.findByAccountNumAndAccountPw(requestDto.getAccountNum(), requestDto.getAccountPw());
+        System.out.println("---2-- " + account);
+        
+        
+        if (account == null) {
+            return null;  // 계좌 정보가 없거나 비밀번호가 일치하지 않습니다.
+        }
+
+        //Ipo 정보 조회
+        Optional<Ipo> optionalIpo = ipoRepository.findById(requestDto.getIpoId());
+        Ipo ipo = optionalIpo.get();
+
+        System.out.println("====== " + ipo);
+        
+
+        BigDecimal balance = account.get().getBalance();
+        BigDecimal slprc = ipo.getSlprc();
+     // OrderableAmount 계산: {(balance-2000)/(slprc/2)}
+        BigDecimal orderableAmountDecimal = balance.subtract(new BigDecimal("2000")).divide(slprc.divide(new BigDecimal("2")), RoundingMode.HALF_UP);
+        int orderableAmount = orderableAmountDecimal.intValue();
+
+        OrderAccountVerifyDto responseDto = new OrderAccountVerifyDto();
+        responseDto.setIpoId(requestDto.getIpoId());
+        responseDto.setBalance(balance);
+        responseDto.setOrderableAmount(orderableAmount);
+        responseDto.setSlprc(slprc);
+
+        
+        return responseDto;
+    }
 	
 	//청약 정보 입력 > ‘다음’ 버튼 클릭
 	@Override

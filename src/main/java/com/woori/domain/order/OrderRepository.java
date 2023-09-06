@@ -17,11 +17,6 @@ public interface OrderRepository extends JpaRepository<Orders, Long> {
 
 	void save(OrderApprovalRequestDto orderApprovalRequestDto);
 
-//	Optional<OrderListDto> findById(String userId);
-
-//	Optional<OrderListDto> findByUserId(String userId);
-	//select * from Orders where userid=? and orderdate=?
-	//List<Orders> findByUserUserIdAndOrderDate(String userId, LocalDate date);
 	@Query(value = "SELECT * FROM orders WHERE user_id=:userId AND DATE_FORMAT(order_date, '%Y-%m-%d')=:date", nativeQuery = true)
 	List<Orders> findByUserIdAndOrderDate(@Param("userId") String userId, @Param("date") LocalDate date);
 	

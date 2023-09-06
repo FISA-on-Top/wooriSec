@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
     				dto.setUserName(user.getUserName());
     				dto.setBirth(user.getBirth());
     				dto.setUserId(user.getUserId());
-    				dto.setAccountNum(user.getAccountNum());
+    				dto.setAccountNum(user.getAccount().getAccountNum());
     				dto.setCreatedAt(user.getCreatedAt());
     				
     				return dto;
