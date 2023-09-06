@@ -12,14 +12,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="user")
+@Table(name = "user")
 @ToString
 @Entity
 public class User {
+
     @Id
     @Column(name = "user_id", nullable = false, length = 20)
     private String userId;

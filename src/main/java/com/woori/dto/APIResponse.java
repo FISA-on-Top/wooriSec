@@ -32,4 +32,8 @@ public class APIResponse<T> {
     public static <T>APIResponse<T> failbyRequest(T response){
     	return new APIResponse<>("1003","Invalid Request",response);
     }
+    public static <T>APIResponse<T> failbyTransaction(T response){
+    	return new APIResponse<>("1004","Fail DB Transaction",response);
+    }
+
 }

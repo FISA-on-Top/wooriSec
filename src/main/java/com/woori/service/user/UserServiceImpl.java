@@ -10,14 +10,21 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.woori.InvalidException;
 import com.woori.domain.entity.User;
 import com.woori.domain.user.UserRepository;
 import com.woori.dto.user.AlluserInfoResponseDto;
 import com.woori.dto.user.LoginRequestDto;
+import com.woori.dto.user.MypageDeleteRequestDto;
+import com.woori.dto.user.MypageDeleteResponseDto;
+import com.woori.dto.user.MypageInfoDto;
+import com.woori.dto.user.MypageUpdateRequestDto;
 import com.woori.dto.user.UserInfoDto;
 
 @Service
 public class UserServiceImpl implements UserService {
+	
+	private static final String STATUS_WITHDRAWAL = "withdrawal";
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -61,6 +68,95 @@ public class UserServiceImpl implements UserService {
     	return AlluserInfoResponseDto.responseData(pageUser.getTotalPages(), pageUser.getNumber()+1, dtos);
     }
     
+    public MypageInfoDto getUserInfoById(String id) {
+    	Optional<User> optionalUser = userRepository.findById(id);
+   
+    	
+    	if(!optionalUser.isPresent()) {
+    		return null;
+    	}
+    	else {
+    	   	MypageInfoDto dto = new MypageInfoDto();
+    	   	User user = optionalUser.get();
+    	   	dto.setUserName(user.getUserName());
+    	   	dto.setUserId(user.getUserId());
+    	   	dto.setBirth(user.getBirth());
+    	   	dto.setPhoneNum(user.getPhoneNum());
+    	   	dto.setEmail(user.getEmail());
+    	   	dto.setAccountNum(user.getAccount().getAccountNum());
+    		return dto;
+    	}
+    }
+    
+    public User getUserById(String id) {
+    	Optional<User> optionalUser = userRepository.findById(id);
+    	
+    	if(!optionalUser.isPresent()) {
+    		return null;
+    	}
+    	else {
+    		return optionalUser.get();
+    	}
+    }
+    
+    public MypageInfoDto updateUserInfoById(String id, MypageUpdateRequestDto requestBody) {
+    	//사용자 검증
+    	LoginRequestDto verifyUserDto = new LoginRequestDto();
+    	verifyUserDto.setUserId(id);
+    	verifyUserDto.setUserPw(requestBody.getUserPw());
+    	
+    	User user = login(verifyUserDto);
+    	
+    	if(user == null) {
+    		return null;
+    	}
+    	
+    	user.setEmail(requestBody.getEmail());
+    	user.setPhoneNum(requestBody.getPhoneNum());
+    	
+    	User updateUser = userRepository.save(user);
+    	
+    	MypageInfoDto dto = new MypageInfoDto(
+    				updateUser.getUserName(),
+    				updateUser.getUserId(),
+    				updateUser.getBirth(),
+    				updateUser.getPhoneNum(),
+    				updateUser.getEmail(),
+    				updateUser.getAccount().getAccountNum()
+    			);
+    	
+    	return dto;
+    }
+    public MypageDeleteResponseDto deleteUserInfoById(String id, MypageDeleteRequestDto requestBody) throws InvalidException {
+        //사용자 검증
+        User user = getUserById(id);
+
+        if (user == null) {
+            throw new InvalidException("Invalid Request.", 1003);
+        }
+
+        MypageDeleteResponseDto dto = new MypageDeleteResponseDto();
+
+        if (user.getUserName().equals(requestBody.getUserName())
+            && user.getUserId().equals(requestBody.getUserId())
+            && user.getBirth().equals(requestBody.getBirth())
+            && user.getUserPw().equals(requestBody.getUserPw())) {
+            
+            user.setStatus(STATUS_WITHDRAWAL);
+            
+            try {
+                User updateUser = userRepository.save(user);
+                dto.setStatus(updateUser.getStatus());
+            } catch (Exception e) {
+                throw new InvalidException("Fail DB Transaction.", 1004);
+            }
+
+        } else {
+            throw new InvalidException("Authentication failed.", 1001);
+        }
+
+        return dto;
+    }
     /**
      * userId(Long)를 입력받아 User을 return 해주는 기능
      * 인증, 인가 시 사용
