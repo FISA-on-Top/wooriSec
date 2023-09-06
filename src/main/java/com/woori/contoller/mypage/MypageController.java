@@ -2,6 +2,7 @@ package com.woori.contoller.mypage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.woori.domain.entity.User;
+import com.woori.InvalidException;
 import com.woori.dto.APIResponse;
+import com.woori.dto.user.MypageDeleteRequestDto;
+import com.woori.dto.user.MypageDeleteResponseDto;
 import com.woori.dto.user.MypageInfoDto;
 import com.woori.dto.user.MypageUpdateRequestDto;
 import com.woori.service.user.UserService;
@@ -56,5 +59,25 @@ public class MypageController {
 		}
 		
 		return ResponseEntity.ok(APIResponse.success(dto));
+	}
+	
+	@DeleteMapping("/withdrawal")
+	public ResponseEntity<APIResponse<?>> deleteUserInfo(@RequestHeader(name="userId")String userId,
+														@RequestBody MypageDeleteRequestDto requestBody){
+	    try {
+	        MypageDeleteResponseDto dto = userService.deleteUserInfoById(userId, requestBody);
+	        return ResponseEntity.ok(APIResponse.success(dto));
+	    }catch (InvalidException ie) {
+	        switch (ie.getResultCode()) {
+            case 1001:
+                return ResponseEntity.ok(APIResponse.failbyValidation("인증에 실패하였습니다."));
+            case 1003:
+                return ResponseEntity.ok(APIResponse.failbyRequest("유효한 id가 아닙니다."));
+            case 1004:
+                return ResponseEntity.ok(APIResponse.failbyTransaction("탈퇴 작업 실패, 재시도하세요"));
+            default:
+                return ResponseEntity.ok(APIResponse.failbyRequest("Unknown error occurred."));
+        }
+	    }
 	}
 }
