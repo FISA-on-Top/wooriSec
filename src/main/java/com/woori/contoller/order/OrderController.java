@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.woori.dto.APIResponse;
+import com.woori.dto.account.VerifyRequestDto;
 import com.woori.dto.order.OrderAccountDto;
+import com.woori.dto.order.OrderAccountVerifyDto;
 import com.woori.dto.order.OrderApprovalRequestDto;
 import com.woori.dto.order.OrderCancelDto;
 import com.woori.dto.order.OrderInfoDto;
@@ -60,8 +62,20 @@ public class OrderController {
 		return ResponseEntity.ok(APIResponse.success(accountDto));
 	}
 
-	// 청약 정보 입력 > 청약계좌 선택 > 계좌 비밀번호 [확인]버튼
-//	@GetMapping("/account/verify")
+	//청약 정보 입력 > 청약계좌 선택 > 계좌 비밀번호 확인버튼
+	@PostMapping("/account/verify")
+	public ResponseEntity<OrderAccountVerifyDto> verifyAccount(@RequestBody VerifyRequestDto dto) {
+
+		OrderAccountVerifyDto verifyDto = orderService.getOrderableInfo(dto);
+		
+		if (dto != null) {
+            return ResponseEntity.ok(verifyDto);
+        } else {
+        	//인증 실패
+        	return null;
+//            return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다");
+        }
+	}
 
 	// 청약 정보 입력 > ‘다음’ 버튼 클릭
 	// 중간에 바뀔 수도??

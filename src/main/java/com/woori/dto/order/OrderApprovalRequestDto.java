@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.woori.domain.entity.Ipo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

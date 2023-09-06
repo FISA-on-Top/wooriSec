@@ -2,7 +2,6 @@ package com.woori.domain.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
