@@ -20,7 +20,7 @@ import lombok.ToString;
 public class OrderInfoDto {
 	
     private Long ipoId;
-    private String name;
+    private String accountName;
     private String corpName;
     private int orderAmount;
     private BigDecimal slprc;

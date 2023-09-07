@@ -64,16 +64,15 @@ public class OrderController {
 
 	//청약 정보 입력 > 청약계좌 선택 > 계좌 비밀번호 확인버튼
 	@PostMapping("/account/verify")
-	public ResponseEntity<OrderAccountVerifyDto> verifyAccount(@RequestBody VerifyRequestDto dto) {
+	public ResponseEntity<APIResponse<?>> verifyAccount(@RequestBody VerifyRequestDto dto) {
 
 		OrderAccountVerifyDto verifyDto = orderService.getOrderableInfo(dto);
 		
 		if (dto != null) {
-            return ResponseEntity.ok(verifyDto);
+            return ResponseEntity.ok(APIResponse.success(verifyDto));
         } else {
-        	//인증 실패
-        	return null;
-//            return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다");
+        	return ResponseEntity.ok(APIResponse.failbyRequest("비밀번호가 일치하지 않습니다"));
+        	//return ResponseEntity.badRequest().body("비밀번호가 일치하지 않습니다");
         }
 	}
 
@@ -98,9 +97,7 @@ public class OrderController {
 
 	// 청약 결과 조회/취소 - ‘실행’ 버튼 클릭
 	@DeleteMapping("/cancel")
-//	public ResponseEntity<OrderCancelDto> cancelOrder(
-//	public ResponseEntity<APIResponse<?>> cancelOrder(
-	public ResponseEntity<?> cancelOrder(
+	public ResponseEntity<APIResponse<?>> cancelOrder(
 			@RequestHeader String accountNum,
 			@RequestHeader String accountPw,
 			@RequestBody Map<String, Long> requestBody){
@@ -114,8 +111,6 @@ public class OrderController {
 			
 		} catch(IllegalArgumentException e) {
 			
-//			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-//			String s = e.getMessage();
 			return new ResponseEntity<>(APIResponse.failbyRequest(e.getMessage()), HttpStatus.BAD_REQUEST);
 		}
 		

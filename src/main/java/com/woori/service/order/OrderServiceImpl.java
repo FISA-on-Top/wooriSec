@@ -147,7 +147,7 @@ public class OrderServiceImpl implements OrderService {
 	        // OrderInfoDto 객체를 생성하고 값을 설정
 	        OrderInfoDto orderInfoDto = new OrderInfoDto(); 
 	        orderInfoDto.setIpoId(ipoTemp.getIpoId()); //IpoId
-	        orderInfoDto.setName("Account_Name");//accountName 청약계좌 소유자 명 -- String
+	        orderInfoDto.setAccountName("Account_Name");//accountName 청약계좌 소유자 명 -- String
 	        orderInfoDto.setCorpName(ipo.getCorpName()); //종목명
 	        orderInfoDto.setOrderAmount(orderApprovalRequestDto.getOrderAmount());//청약 주수
 	        orderInfoDto.setSlprc(ipoTemp.getSlprc());//공모가(확정 발행가) 
