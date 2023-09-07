@@ -6,10 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.woori.dto.inquire.InquireDto;
-import com.woori.service.ipo.InquireServiceImpl;
+import com.woori.InvalidException;
+import com.woori.dto.APIResponse;
+import com.woori.dto.ipo.CalenderResponseDto;
+import com.woori.service.ipo.IpoService;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -20,7 +23,7 @@ import io.swagger.annotations.ApiResponses;
 public class IpoController {
 
     @Autowired
-	private InquireServiceImpl inquireService;	//@Service로 선언된 클래스의 인스턴스(ServiceImpl 주입받아 사용)
+	private IpoService ipoService;	//@Service로 선언된 클래스의 인스턴스(ServiceImpl 주입받아 사용)
 
 	@ApiOperation(value = "종목 조회", notes = "API 설명 부분 : ipo 종목 조회")
 	@ApiResponses({ 
@@ -28,10 +31,26 @@ public class IpoController {
 		@ApiResponse(code = 404, message = "404 에러 발생"),
 		@ApiResponse(code = 500, message = "500 에러 발생")
 	})
-	@GetMapping("/list") // 팝업창으로 떠야할수도
-	public ResponseEntity<List<InquireDto>> getAllIpoDetails() {
-		List<InquireDto> inquireDtos = inquireService.getAllIpoDetails();
-		return ResponseEntity.ok(inquireDtos);
+//	@GetMapping("/list") // 팝업창으로 떠야할수도
+//	public ResponseEntity<List<InquireDto>> getAllIpoDetails() {
+//		List<InquireDto> inquireDtos = inquireService.getAllIpoDetails();
+//		return ResponseEntity.ok(inquireDtos);
+//	}
+	
+	@GetMapping("/calendar")
+	public ResponseEntity<APIResponse<?>> getIpoSummary(@RequestParam(name = "yyyy") int year, 
+														@RequestParam(name = "mm") int month){
+		
+		try {
+			List<CalenderResponseDto> dto = ipoService.getIpoSummary(year,month);
+			return ResponseEntity.ok(APIResponse.success(dto));
+			
+		}catch (InvalidException ie) {
+	        switch (ie.getResultCode()) {	
+            default:
+                return ResponseEntity.ok(APIResponse.failbyRequest("Unknown error occurred."));
+	        }
+		}
 	}
 	
 }

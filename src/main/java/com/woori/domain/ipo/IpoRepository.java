@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.woori.domain.entity.Ipo;
@@ -18,4 +20,10 @@ public interface IpoRepository extends JpaRepository<Ipo, Long> {
 	List<Ipo> findBySbd(LocalDate date);
 	
 	Page<Ipo> findBySbd(LocalDate sbd, Pageable pageable);
+	
+	//년, 월에 따라 공모주 조회
+//    @Query("SELECT i FROM Ipo i WHERE YEAR(i.sbd) = :year AND MONTH(i.sbd) = :month")
+//    List<Ipo> findBySbd(@Param("year") int year, @Param("month") int month);
+    @Query(value = "SELECT * FROM ipo WHERE YEAR(sbd) = :year AND MONTH(sbd) = :month", nativeQuery = true)
+    List<Ipo> findBySbd(@Param("year") int year, @Param("month") int month);
 }

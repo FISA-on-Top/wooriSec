@@ -1,4 +1,4 @@
-package com.woori.dto.inquire;
+package com.woori.dto.ipo;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -17,7 +17,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class InquireDto {
+public class IpoDetailResponseDto {
 
 	// 종목 조회
 	private Long ipoId;
