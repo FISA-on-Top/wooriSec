@@ -14,8 +14,6 @@ import com.woori.domain.entity.Ipo;
 
 @Repository
 public interface IpoRepository extends JpaRepository<Ipo, Long> {
-	Ipo findById = null;
-
 	//날짜에 따라 가능한 공모주 조회
 	List<Ipo> findBySbd(LocalDate date);
 	
@@ -26,4 +24,8 @@ public interface IpoRepository extends JpaRepository<Ipo, Long> {
 //    List<Ipo> findBySbd(@Param("year") int year, @Param("month") int month);
     @Query(value = "SELECT * FROM ipo WHERE YEAR(sbd) = :year AND MONTH(sbd) = :month", nativeQuery = true)
     List<Ipo> findBySbd(@Param("year") int year, @Param("month") int month);
+
+    //sdb 최신일 기준 내림차순 공모주 종목조회
+    Page<Ipo> findAllByOrderBySbdDesc(Pageable pageable);
+    
 }

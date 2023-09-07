@@ -9,9 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mysql.cj.jdbc.ha.BestResponseTimeBalanceStrategy;
 import com.woori.InvalidException;
 import com.woori.dto.APIResponse;
 import com.woori.dto.ipo.CalenderResponseDto;
+import com.woori.dto.ipo.IpoDetailDto;
+import com.woori.dto.ipo.ListResponseDto;
 import com.woori.service.ipo.IpoService;
 
 import io.swagger.annotations.ApiOperation;
@@ -36,7 +39,22 @@ public class IpoController {
 //		List<InquireDto> inquireDtos = inquireService.getAllIpoDetails();
 //		return ResponseEntity.ok(inquireDtos);
 //	}
-	
+	@GetMapping
+	public ResponseEntity<APIResponse<?>> getIpoById(@RequestParam(name="ipoId") Long ipoId){
+		try {
+			IpoDetailDto dto = ipoService.getIpoById(ipoId);
+			return ResponseEntity.ok(APIResponse.success(dto));		
+		}catch(InvalidException ie) {
+	        switch (ie.getResultCode()) {	
+	        case 1003:
+	        	 return ResponseEntity.ok(APIResponse.failbyRequest("잘못된 요청입니다."));
+	        default:
+	            return ResponseEntity.ok(APIResponse.failbyRequest("Unknown error occurred."));
+	        }			
+		}
+
+	}
+	  
 	@GetMapping("/calendar")
 	public ResponseEntity<APIResponse<?>> getIpoSummary(@RequestParam(name = "yyyy") int year, 
 														@RequestParam(name = "mm") int month){
@@ -49,6 +67,20 @@ public class IpoController {
 	        switch (ie.getResultCode()) {	
             default:
                 return ResponseEntity.ok(APIResponse.failbyRequest("Unknown error occurred."));
+	        }
+		}
+	}
+	
+	@GetMapping("list")
+	public ResponseEntity<APIResponse<?>> getAllIpo(@RequestParam(name = "index") int index){
+		
+		try {
+			ListResponseDto dto = ipoService.getAllIpo(index);
+			return ResponseEntity.ok(APIResponse.success(dto));
+		}catch (InvalidException ie) {
+	        switch (ie.getResultCode()) {	
+	        default:
+	            return ResponseEntity.ok(APIResponse.failbyRequest("Unknown error occurred."));
 	        }
 		}
 	}
