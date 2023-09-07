@@ -23,4 +23,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 	Optional<User> findByUserIdAndUserPw(String userId, String userPw);
 	
 	Page<User> findAll(Pageable pageable);
+	
+	//ID 중복 확인
+	boolean existsByUserId(String userId);
 }
