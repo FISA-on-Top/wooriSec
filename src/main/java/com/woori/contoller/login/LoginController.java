@@ -25,7 +25,8 @@ public class LoginController {
 		
 		User u = userService.login(user);
 		
-		//null이 아닌 경우 id 값을 json 형식으로 응답 
+		//null이 아닌 경우 id 값을 json 형식으로 응답
+		//수정 필요!!!! 형식 맞춰 수정!! 수정후 주석 지우기
 		if (u != null) {
 			return new LoginResponseDto("0000", "ok", u.getUserId());
 		}
