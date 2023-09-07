@@ -127,15 +127,22 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public OrderInfoDto setOrderInfo(OrderApprovalRequestDto orderApprovalRequestDto) {
 		
-		String userId = "유저임";
-		User user = userRepository.findById(userId).orElse(null);
-		Ipo ipo = ipoRepository.findById(orderApprovalRequestDto.getIpoId()).get();
 		
-		Orders orders = new Orders(orderApprovalRequestDto, userId);
+		User user = userRepository.findByPhoneNum(orderApprovalRequestDto.getPhoneNum())
+				.orElseThrow(() -> new RuntimeException("User not found with phone number: " + orderApprovalRequestDto.getPhoneNum()));
+		Ipo ipo = ipoRepository.findById(orderApprovalRequestDto.getIpoId()).orElse(null);
+		
+		Orders orders = new Orders(orderApprovalRequestDto);
+		System.out.println(user);
 		orders.setUser(user);
 		orders.setIpo(ipo);
-		
-		//신청내역 저장 DB order테이블에 맞춰서
+		orders.setOrderAmount(orderApprovalRequestDto.getOrderAmount());
+		orders.setOrderableAmount((new BigDecimal(ipo.getStkcnt()).multiply(new BigDecimal("0.1"))).intValue());//신청내역 저장 DB order테이블에 맞춰서
+		orders.setStatus("Ordered");		
+		orders.setOrderDate(LocalDateTime.now());
+//		orders.setCancleDate(null);
+		orders.setPhoneNum(orderApprovalRequestDto.getPhoneNum());
+		orders.setDeposit(orderApprovalRequestDto.getDeposit());
 		orderRepository.save(orders);
 		
 //		userRepository.save(orderResponseDto);
@@ -147,7 +154,7 @@ public class OrderServiceImpl implements OrderService {
 	        // OrderInfoDto 객체를 생성하고 값을 설정
 	        OrderInfoDto orderInfoDto = new OrderInfoDto(); 
 	        orderInfoDto.setIpoId(ipoTemp.getIpoId()); //IpoId
-	        orderInfoDto.setAccountName("Account_Name");//accountName 청약계좌 소유자 명 -- String
+	        orderInfoDto.setUserName(user.getUserName());//accountName 청약계좌 소유자 명 -- String
 	        orderInfoDto.setCorpName(ipo.getCorpName()); //종목명
 	        orderInfoDto.setOrderAmount(orderApprovalRequestDto.getOrderAmount());//청약 주수
 	        orderInfoDto.setSlprc(ipoTemp.getSlprc());//공모가(확정 발행가) 
