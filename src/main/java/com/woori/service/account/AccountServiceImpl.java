@@ -7,6 +7,7 @@ import com.woori.InvalidException;
 import com.woori.domain.account.AccountRepository;
 import com.woori.domain.entity.Account;
 import com.woori.dto.user.SignupAccountRequestDto;
+import com.woori.dto.user.SignupAccountResponseDto;
 
 @Service
 public class AccountServiceImpl implements AccountService{
@@ -15,7 +16,7 @@ public class AccountServiceImpl implements AccountService{
 	private AccountRepository accountRepository;
 	
 	@Override
-    public Account verifyAccount(SignupAccountRequestDto requestDto) throws InvalidException {
+    public SignupAccountResponseDto verifyAccount(SignupAccountRequestDto requestDto) throws InvalidException {
         Account account = accountRepository.findByAccountNumAndAccountPwAndBirth(
             requestDto.getAccountNum(),
             requestDto.getAccountPw(),
@@ -26,7 +27,7 @@ public class AccountServiceImpl implements AccountService{
             throw new InvalidException("계좌 정보가 일치하지 않습니다.", 1003);
         }
 
-        return account;
+        return new SignupAccountResponseDto(account.getName());
     }
 	}
 	

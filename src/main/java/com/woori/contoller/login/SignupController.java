@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.woori.domain.entity.Account;
 import com.woori.dto.APIResponse;
 import com.woori.dto.user.SignupAccountRequestDto;
+import com.woori.dto.user.SignupAccountResponseDto;
 import com.woori.service.account.AccountService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class SignupController {
 	@PostMapping("/account")
 	public ResponseEntity<APIResponse<?>> verifyAccount(
 			@RequestBody SignupAccountRequestDto requestDto) {
-		Account responseDto = accountService.verifyAccount(requestDto);
+		SignupAccountResponseDto responseDto = accountService.verifyAccount(requestDto);
 		
 		if (requestDto != null) {
             return ResponseEntity.ok(APIResponse.success(responseDto));
