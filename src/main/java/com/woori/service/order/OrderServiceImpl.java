@@ -140,7 +140,7 @@ public class OrderServiceImpl implements OrderService {
 		orders.setOrderableAmount((new BigDecimal(ipo.getStkcnt()).multiply(new BigDecimal("0.1"))).intValue());//신청내역 저장 DB order테이블에 맞춰서
 		orders.setStatus("Ordered");		
 		orders.setOrderDate(LocalDateTime.now());
-//		orders.setCancleDate(null);
+//		orders.setcancelDate(null);
 		orders.setPhoneNum(orderApprovalRequestDto.getPhoneNum());
 		orders.setDeposit(orderApprovalRequestDto.getDeposit());
 		orderRepository.save(orders);
@@ -212,7 +212,7 @@ public class OrderServiceImpl implements OrderService {
         Orders order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException("Order not found"));
         
-        if(order.getCancleDate() != null) {
+        if(order.getCancelDate() != null) {
         	throw new IllegalArgumentException("주문이 이미 취소되었습니다.");
         }
         // 3. 청약 취소 및 잔고 계산
@@ -221,7 +221,7 @@ public class OrderServiceImpl implements OrderService {
         accountRepository.save(account);
 
         // 4. 주문 취소 날짜 업데이트
-        order.setCancleDate(LocalDateTime.now());
+        order.setCancelDate(LocalDateTime.now());
         order.setStatus("Cancelled");
         orderRepository.save(order);
         
@@ -232,7 +232,7 @@ public class OrderServiceImpl implements OrderService {
         orderCancelDto.setCorpCls(order.getIpo().getCorpCls());
         orderCancelDto.setDeposit(order.getDeposit());
         orderCancelDto.setOrderId(order.getOrderId());
-        orderCancelDto.setCancelDate(order.getCancleDate());
+        orderCancelDto.setCancelDate(order.getCancelDate());
         orderCancelDto.setCorpCode(order.getIpo().getCorpCode());
         orderCancelDto.setCorpName(order.getIpo().getCorpName());
 		

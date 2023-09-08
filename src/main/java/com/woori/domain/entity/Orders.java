@@ -55,8 +55,8 @@ public class Orders {
     @Column(name = "order_date", columnDefinition = "DATETIME")
     private LocalDateTime orderDate;
 
-    @Column(name = "cancle_date", columnDefinition = "DATETIME")
-    private LocalDateTime cancleDate;
+    @Column(name = "cancel_date", columnDefinition = "DATETIME")
+    private LocalDateTime cancelDate;
     
     @Column(name = "phone_num")
     private String phoneNum;
@@ -70,7 +70,7 @@ public class Orders {
 //    	this.user = user;
 //    	this.status = "";//status
 //    	this.orderDate = orderApprovalRequestDto.getOrderDate();//orderDate
-    	this.cancleDate = null;//cancelDate
+    	this.cancelDate = null;//cancelDate
     	this.phoneNum = orderApprovalRequestDto.getPhoneNum();//phoneNum
     	this.deposit = orderApprovalRequestDto.getDeposit();//deposit
     }

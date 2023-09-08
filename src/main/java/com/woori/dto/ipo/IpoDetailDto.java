@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.Date;
 
 import com.woori.domain.entity.Ipo;
-import com.woori.dto.order.OrderApprovalRequestDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -55,7 +54,7 @@ public class IpoDetailDto {
 //	this.orderAmount = orderApprovalRequestDto.getOrderAmount();//orderAmount
 //	this.status = "";//status
 //	this.orderDate = orderApprovalRequestDto.getOrderDate();//orderDate
-//	this.cancleDate = null;//cancelDate
+//	this.cancelDate = null;//cancelDate
 //	this.phoneNum = orderApprovalRequestDto.getPhoneNum();//phoneNum
 //	this.deposit = orderApprovalRequestDto.getDeposit();//deposit
 //}
