@@ -65,13 +65,18 @@ public class Orders {
 	private BigDecimal deposit;	//청약증거금
     
     //서비스로 메서드 하나 옮긴 후 지우면 good
-    public Orders(OrderApprovalRequestDto orderApprovalRequestDto, String userId) {
+    public Orders(OrderApprovalRequestDto orderApprovalRequestDto) {
     	this.orderAmount = orderApprovalRequestDto.getOrderAmount();//orderAmount
-    	this.status = "";//status
-    	this.orderDate = orderApprovalRequestDto.getOrderDate();//orderDate
+//    	this.user = user;
+//    	this.status = "";//status
+//    	this.orderDate = orderApprovalRequestDto.getOrderDate();//orderDate
     	this.cancleDate = null;//cancelDate
     	this.phoneNum = orderApprovalRequestDto.getPhoneNum();//phoneNum
     	this.deposit = orderApprovalRequestDto.getDeposit();//deposit
     }
+
+	public Orders(OrderApprovalRequestDto orderApprovalRequestDto, String userId) {
+		// TODO Auto-generated constructor stub
+	}
 
 }
