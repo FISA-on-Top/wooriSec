@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.woori.InvalidException;
 import com.woori.dto.APIResponse;
 import com.woori.dto.user.RegisterRequestDto;
 import com.woori.dto.user.SignupAccountRequestDto;
@@ -59,14 +60,20 @@ public class SignupController {
 	}
 	
 	@PostMapping("/register")
-    public ResponseEntity<String> signUp(@RequestBody RegisterRequestDto requestDto) {
+    public ResponseEntity<APIResponse<?>> signUp(@RequestBody RegisterRequestDto requestDto) {
         try {
 
             accountService.SignUp(requestDto);
-            return ResponseEntity.ok("Successfully registered!");
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+            return ResponseEntity.ok(APIResponse.success(requestDto));
+        } catch (InvalidException e) {
+        	switch (e.getResultCode()) {
+        	case 1002:
+        		return ResponseEntity.ok(APIResponse.failbyRequest("Invalid data format"));
+        	case 1004:
+        		return ResponseEntity.ok(APIResponse.failbyRequest("Fail DB Transaction"));
+        	default:
+                return ResponseEntity.ok(APIResponse.failbyRequest("Unknown error occurred."));
+        	}
     }
 }
-		
+}
