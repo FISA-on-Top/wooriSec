@@ -1,6 +1,7 @@
 package com.woori.domain.entity;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -36,19 +37,19 @@ public class Ipo {
     @Column(name = "corp_name", nullable = false, length = 100)
     private String corpName;
 
-    @Column(name = "sbd")
-    private Date sbd;
+    @Column(name = "sbd", columnDefinition = "DATE")
+    private LocalDate sbd;
     
-    @Column(name = "pymd")
-    private Date pymd;
+    @Column(name = "pymd", columnDefinition = "DATE")
+    private LocalDate pymd;
 
-    @Column(name = "refund")
-    private Date refund;
+    @Column(name = "refund", columnDefinition = "DATE")
+    private LocalDate refund;
 
     @Column(name = "ipo_date")
-    private Date ipoDate;
+    private Date ipoDate;	//date, datetime 고려해보기
 
-    @Column(name = "slprc", precision = 8, scale = 3)
+    @Column(name = "slprc", precision = 8, scale = 2)
     private BigDecimal slprc;
 
     @Column(name = "corp_cls", length = 10)

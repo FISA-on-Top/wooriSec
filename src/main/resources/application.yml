@@ -22,8 +22,8 @@ spring:
      matching-strategy: ANT_PATH_MATCHER
 
 # server:
-#   port: 9999
-    
+#   port: 8080
+#    
 # spring:
 #   datasource:
 #     driver-class-name: com.mysql.cj.jdbc.Driver
