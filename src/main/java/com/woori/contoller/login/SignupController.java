@@ -61,7 +61,7 @@ public class SignupController {
 	@PostMapping("/register")
     public ResponseEntity<String> signUp(@RequestBody RegisterRequestDto requestDto) {
         try {
-//            User u = 
+
             accountService.SignUp(requestDto);
             return ResponseEntity.ok("Successfully registered!");
         } catch (RuntimeException e) {
