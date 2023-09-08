@@ -14,5 +14,7 @@ public interface AccountRepository extends JpaRepository<Account, Long>{
 	Optional<Account> findByAccountNumAndAccountPw(String accountNum, String accountPw);
 
 	public Account findByAccountNumAndAccountPwAndBirth(String accountNum, String accountPw, LocalDate birth);
+
+	Optional<Account> findByAccountNum(String accountNum);
 	
 }

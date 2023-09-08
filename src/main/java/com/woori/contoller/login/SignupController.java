@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.woori.dto.APIResponse;
+import com.woori.dto.user.RegisterRequestDto;
 import com.woori.dto.user.SignupAccountRequestDto;
 import com.woori.dto.user.SignupAccountResponseDto;
 import com.woori.service.account.AccountService;
@@ -48,15 +49,15 @@ public class SignupController {
 	    }
 	}
 	
-//	@PostMapping("/signup")
-//    public ResponseEntity<String> signUp(@RequestBody SignUpRequestDto requestDto) {
-//        try {
-//            userService.signUp(requestDto);
-//            return ResponseEntity.ok("Successfully registered!");
-//        } catch (RuntimeException e) {
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        }
-//    }
-//}
+	@PostMapping("/register")
+    public ResponseEntity<String> signUp(@RequestBody RegisterRequestDto requestDto) {
+        try {
+//            User u = 
+            accountService.SignUp(requestDto);
+            return ResponseEntity.ok("Successfully registered!");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+}
 		
-	}

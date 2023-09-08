@@ -1,12 +1,18 @@
 package com.woori.service.account;
 
+import java.time.LocalDateTime;
+
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.woori.InvalidException;
 import com.woori.domain.account.AccountRepository;
 import com.woori.domain.entity.Account;
+import com.woori.domain.entity.User;
 import com.woori.domain.user.UserRepository;
+import com.woori.dto.user.RegisterRequestDto;
 import com.woori.dto.user.SignupAccountRequestDto;
 import com.woori.dto.user.SignupAccountResponseDto;
 
@@ -40,30 +46,33 @@ public class AccountServiceImpl implements AccountService{
 	    return !userRepository.existsById(userId);
 	}
 	
-//	@Override
-//    @Transactional
-//    public void signUp(SignUpRequestDto requestDto) {
-//        if(!isUserIdAvailable(requestDto.getUserId())) {
-//            throw new RuntimeException("UserID already exists!");
-//        }
-//
-//        Account linkedAccount = accountRepository.findById(requestDto.getAccountId())
-//            .orElseThrow(() -> new RuntimeException("Account not found!"));
-//
-//        User newUser = new User(
-//            requestDto.getUserId(),
-//            linkedAccount,
-//            linkedAccount.getName(),
-//            requestDto.getUserPw(),
-//            requestDto.getPhoneNum(),
-//            requestDto.getEmail(),
-//            linkedAccount.getBirth(),
-//            null,
-//            "ACTIVE"
-//        );
-//
-//        userRepository.save(newUser);
-//    }
-//}
+	@Override
+    @Transactional
+    public User SignUp(RegisterRequestDto requestDto) {
+        if(!userIdCheck(requestDto.getUserId())) {
+            throw new RuntimeException("UserID already exists!");
+        }
+
+        Account linkedAccount = accountRepository.findByAccountNum(requestDto.getAccountNum())            .orElseThrow(() -> new RuntimeException("Account not found!"));
+
+        String status = "registered";
+        
+        User u = new User(
+            requestDto.getUserId(),
+            linkedAccount,
+            linkedAccount.getName(),
+            requestDto.getUserPw(),
+            requestDto.getPhoneNum(),
+            requestDto.getEmail(),
+            linkedAccount.getBirth(),
+            LocalDateTime.now(),
+            status
+        );
+
+        userRepository.save(u);
+        return u;
+    }
+
+
 }
 	
