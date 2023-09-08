@@ -15,6 +15,9 @@ import com.woori.dto.user.SignupAccountRequestDto;
 import com.woori.dto.user.SignupAccountResponseDto;
 import com.woori.service.account.AccountService;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -25,6 +28,12 @@ public class SignupController {
 	@Autowired
 	private AccountService accountService;
 	
+	@ApiOperation(value = "관리자 페이지", notes = "API 설명 부분 : 사용자 정보 조회")
+	@ApiResponses({ 
+		@ApiResponse(code = 200, message = "성공"),
+		@ApiResponse(code = 404, message = "404 에러 발생"),
+		@ApiResponse(code = 500, message = "500 에러 발생")
+	})
 	
 	@PostMapping("/account")
 	public ResponseEntity<APIResponse<?>> verifyAccount(
