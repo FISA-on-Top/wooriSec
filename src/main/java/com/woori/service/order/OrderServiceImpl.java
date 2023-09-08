@@ -1,7 +1,6 @@
 package com.woori.service.order;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -91,9 +90,7 @@ public class OrderServiceImpl implements OrderService {
 	//계좌에 맞는 비밀번호 입력시 청약계좌선택란에 정보 제공
 	@Override
 	public OrderAccountVerifyDto getOrderableInfo(VerifyRequestDto requestDto) {
-		System.out.println("---1-- " + requestDto);
         Optional<Account> account = accountRepository.findByAccountNumAndAccountPw(requestDto.getAccountNum(), requestDto.getAccountPw());
-        System.out.println("---2-- " + account);
         
         
         if (account == null) {
@@ -104,20 +101,16 @@ public class OrderServiceImpl implements OrderService {
         Optional<Ipo> optionalIpo = ipoRepository.findById(requestDto.getIpoId());
         Ipo ipo = optionalIpo.get();
 
-        System.out.println("====== " + ipo);
-        
 
         BigDecimal balance = account.get().getBalance();
-        BigDecimal slprc = ipo.getSlprc();
-     // OrderableAmount 계산: {(balance-2000)/(slprc/2)}
-        BigDecimal orderableAmountDecimal = balance.subtract(new BigDecimal("2000")).divide(slprc.divide(new BigDecimal("2")), RoundingMode.HALF_UP);
-        int orderableAmount = orderableAmountDecimal.intValue();
+        Long stkcnt = ipo.getStkcnt();
+        int orderableAmount = (int) (stkcnt * 0.1);	     // OrderableAmount 계산: stkcnt*0.1
 
         OrderAccountVerifyDto responseDto = new OrderAccountVerifyDto();
         responseDto.setIpoId(requestDto.getIpoId());
         responseDto.setBalance(balance);
         responseDto.setOrderableAmount(orderableAmount);
-        responseDto.setSlprc(slprc);
+        responseDto.setSlprc(ipo.getSlprc());
 
         
         return responseDto;
