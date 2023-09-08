@@ -1,6 +1,5 @@
 package com.woori.domain.user;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -25,4 +24,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 	Optional<User> findByUserIdAndUserPw(String userId, String userPw);
 	
 	Page<User> findAll(Pageable pageable);
+	
+	//ID 중복 확인
+	boolean existsByUserId(String userId);
 }

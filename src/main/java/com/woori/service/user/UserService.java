@@ -20,4 +20,5 @@ public interface UserService {
 	public MypageInfoDto updateUserInfoById(String id, MypageUpdateRequestDto requestBody);
 	
 	public MypageDeleteResponseDto deleteUserInfoById(String id, MypageDeleteRequestDto requestBody) throws InvalidException;
+
 }

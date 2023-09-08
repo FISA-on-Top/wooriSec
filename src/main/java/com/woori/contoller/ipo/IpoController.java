@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mysql.cj.jdbc.ha.BestResponseTimeBalanceStrategy;
 import com.woori.InvalidException;
 import com.woori.dto.APIResponse;
 import com.woori.dto.ipo.CalenderResponseDto;

@@ -60,7 +60,6 @@ public class Ipo {
 
     @Column(name = "capital_increase", length = 10)
     private String capitalIncrease;
-
     
 }
 	
