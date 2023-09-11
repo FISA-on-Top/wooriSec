@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -106,12 +105,12 @@ public class OrderController {
 			Long orderId = requestBody.get("orderId");
 			OrderCancelDto orderCancelDto = orderService.getCancelOrder(accountNum, accountPw, orderId);
 			
-//			return new ResponseEntity.ok(APIResponse.success(orderCancelDto));
-			return new ResponseEntity<>((APIResponse.success(orderCancelDto)), HttpStatus.OK);
+			return ResponseEntity.ok(APIResponse.success(orderCancelDto));
+			//return new ResponseEntity<>((APIResponse.success(orderCancelDto)), HttpStatus.OK);
 			
 		} catch(IllegalArgumentException e) {
 			
-			return new ResponseEntity<>(APIResponse.failbyRequest(e.getMessage()), HttpStatus.BAD_REQUEST);
+			return ResponseEntity.ok(APIResponse.failbyRequest(e.getMessage()));
 		}
 		
 	}

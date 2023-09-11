@@ -53,7 +53,8 @@ public class AccountServiceImpl implements AccountService{
             throw new RuntimeException("UserID already exists!");
         }
 
-        Account linkedAccount = accountRepository.findByAccountNum(requestDto.getAccountNum())            .orElseThrow(() -> new RuntimeException("Account not found!"));
+        Account linkedAccount = accountRepository.findByAccountNum(requestDto.getAccountNum())            
+        		.orElseThrow(() -> new RuntimeException("Account not found!"));
 
         String status = "registered";
         

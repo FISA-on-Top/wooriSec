@@ -120,7 +120,11 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public OrderInfoDto setOrderInfo(OrderApprovalRequestDto orderApprovalRequestDto) {
 		
-		
+		// phoneNum이 null이거나 빈 문자열인지 확인
+	    if (orderApprovalRequestDto.getPhoneNum() == null || orderApprovalRequestDto.getPhoneNum().trim().isEmpty()) {
+	        throw new RuntimeException("phoneNum should not be null or empty");
+	    }
+	    
 		User user = userRepository.findByPhoneNum(orderApprovalRequestDto.getPhoneNum())
 				.orElseThrow(() -> new RuntimeException("User not found with phone number: " + orderApprovalRequestDto.getPhoneNum()));
 		Ipo ipo = ipoRepository.findById(orderApprovalRequestDto.getIpoId()).orElse(null);
@@ -187,8 +191,8 @@ public class OrderServiceImpl implements OrderService {
 			orderListDto.setOrderDate(order.getOrderDate());//orderDate
 			orderListDto.setCorpCode(ipo.getCorpCode());//corpCode
 			orderListDto.setCorpName(ipo.getCorpName());//corpName
-			orderListDto.setSbd(date);
-			orderListDto.getRefund();
+			orderListDto.setSbd(ipo.getSbd());
+			orderListDto.setRefund(ipo.getRefund());
 			return orderListDto;
 			
 		}).collect(Collectors.toList());
