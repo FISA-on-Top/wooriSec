@@ -187,6 +187,8 @@ public class OrderServiceImpl implements OrderService {
 			orderListDto.setOrderDate(order.getOrderDate());//orderDate
 			orderListDto.setCorpCode(ipo.getCorpCode());//corpCode
 			orderListDto.setCorpName(ipo.getCorpName());//corpName
+			orderListDto.setSbd(date);
+			orderListDto.getRefund();
 			return orderListDto;
 			
 		}).collect(Collectors.toList());

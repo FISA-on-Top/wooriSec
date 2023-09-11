@@ -1,6 +1,7 @@
 package com.woori.dto.order;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
@@ -27,5 +28,8 @@ public class OrderListDto {
     private LocalDateTime orderDate; //Date gpt의 추천
 	private int corpCode;
     private String corpName;
+    private LocalDate sbd;
+    private LocalDate refund;
+    
 
 }
