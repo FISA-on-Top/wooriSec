@@ -9,7 +9,6 @@ pipeline {
         AWS_CREDENTIAL_NAME = 'ECR-access'
         ECR_NAME = 'AWS'
         ECR_PATH = '038331013212.dkr.ecr.ap-northeast-2.amazonaws.com'
-        IMAGE_NAME = 'was'
         IMAGE_VERSION = "0.${BUILD_NUMBER}"
         AWS_REGION = 'ap-northeast-2'
 
@@ -40,7 +39,13 @@ pipeline {
             }            
 
         }         
-        stage('Build Docker Image'){
+        stage('Build Docker Image for Prod server'){
+            when{
+                branch 'main'
+            }
+            environment{
+                IMAGE_NAME = 'backend'
+            }
             steps{
                 script{
                     sh '''
@@ -60,7 +65,73 @@ pipeline {
                 }
             }
         }
-        stage('Push to ECR') {
+        stage('Push to ECR for Prod server') {
+            when{
+                branch 'main'
+            }
+            environment{
+                IMAGE_NAME = 'backend'
+            }
+            steps {
+                script {
+                    // cleanup current user docker credentials
+                    sh 'rm -f ~/.dockercfg ~/.docker/config.json || true'
+
+                    docker.withRegistry("https://${ECR_PATH}", "ecr:${AWS_REGION}:${AWS_CREDENTIAL_NAME}") {
+                      docker.image("${IMAGE_NAME}:${IMAGE_VERSION}").push()
+                      docker.image("${IMAGE_NAME}:latest").push()
+                    }
+
+                }
+            }
+            post {
+                always {
+                    sh("docker rmi -f ${ECR_PATH}/${IMAGE_NAME}:${IMAGE_VERSION}")
+                    sh("docker rmi -f ${ECR_PATH}/${IMAGE_NAME}:latest")
+                    sh("docker rmi -f ${IMAGE_NAME}:${IMAGE_VERSION}")
+                    sh("docker rmi -f ${IMAGE_NAME}:latest")
+                }
+                success {
+                    echo 'success upload image'
+                }
+                failure {
+                    error 'fail upload image' // exit pipeline
+                }
+            }
+        }
+        stage('Build Docker Image for Dev server'){
+            when{
+                branch 'develop'
+            }
+            environment{
+                IMAGE_NAME = 'was'
+            }
+            steps{
+                script{
+                    sh '''
+                    docker build -t ${IMAGE_NAME}:${IMAGE_VERSION} .
+                    docker build -t ${IMAGE_NAME}:latest .
+                    docker tag $IMAGE_NAME:$IMAGE_VERSION $ECR_PATH/$IMAGE_NAME:$IMAGE_VERSION
+                    docker tag $IMAGE_NAME:latest $ECR_PATH/$IMAGE_NAME:latest
+                    '''
+                }
+            }
+            post{
+                success {
+                    echo 'success dockerizing project'
+                }
+                failure {
+                    error 'fail dockerizing project' // exit pipeline
+                }
+            }
+        }        
+        stage('Push to ECR for Dev server') {
+            when{
+                branch 'develop'
+            }
+            environment{
+                IMAGE_NAME = 'was'
+            }
             steps {
                 script {
                     // cleanup current user docker credentials
@@ -96,6 +167,9 @@ pipeline {
                 //     branch 'feature/*'
                 //     branch 'develop'
                 // }
+            }
+            environment{
+                IMAGE_NAME = 'was'
             }            
             steps {
                 echo "Current branch is ${env.BRANCH_NAME}"
