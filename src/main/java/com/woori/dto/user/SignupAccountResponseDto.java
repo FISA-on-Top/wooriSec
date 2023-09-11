@@ -1,28 +1,19 @@
-package com.woori.domain.entity;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
+package com.woori.dto.user;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+@Data
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Builder
-@Entity(name="hello")
-public class Hello {
-	
-	@Id
-	private int hellono;
+public class SignupAccountResponseDto {
 	private String name;
 
-	
-	
 }

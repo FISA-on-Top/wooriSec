@@ -11,3 +11,7 @@ public class WooriSecApplication {
 	}
 
 }
+
+//요청 url
+//http://localhost/swagger-ui.html
+//http://localhost:8080/swagger-ui.html
