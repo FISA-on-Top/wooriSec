@@ -33,11 +33,7 @@ public class IpoController {
 		@ApiResponse(code = 404, message = "404 에러 발생"),
 		@ApiResponse(code = 500, message = "500 에러 발생")
 	})
-//	@GetMapping("/list") // 팝업창으로 떠야할수도
-//	public ResponseEntity<List<InquireDto>> getAllIpoDetails() {
-//		List<InquireDto> inquireDtos = inquireService.getAllIpoDetails();
-//		return ResponseEntity.ok(inquireDtos);
-//	}
+
 	@GetMapping
 	public ResponseEntity<APIResponse<?>> getIpoById(@RequestParam(name="ipoId") Long ipoId){
 		try {
@@ -70,7 +66,7 @@ public class IpoController {
 		}
 	}
 	
-	@GetMapping("list")
+	@GetMapping("/list")
 	public ResponseEntity<APIResponse<?>> getAllIpo(@RequestParam(name = "index") int index){
 		
 		try {

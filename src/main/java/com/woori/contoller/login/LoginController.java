@@ -37,12 +37,14 @@ public class LoginController {
 		
 		User u = userService.login(user);
 		
-		
-		if (u != null) {
-			return ResponseEntity.ok(APIResponse.success(new LoginResponseDto("0000", "ok", u.getUserId())));
+		if(u == null) {
+			return ResponseEntity.ok(APIResponse.failbyRequest("Authentication failed."));
 		}
-		
-		return ResponseEntity.ok(APIResponse.failbyRequest("Authentication failed."));
-
+		else {
+			LoginResponseDto dto = new LoginResponseDto(u.getUserId());
+			return ResponseEntity.ok(APIResponse.success(dto));
+			
+		}
+			
 	}
 }
