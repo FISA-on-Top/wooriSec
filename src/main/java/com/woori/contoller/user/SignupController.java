@@ -1,4 +1,4 @@
-package com.woori.contoller.login;
+package com.woori.contoller.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

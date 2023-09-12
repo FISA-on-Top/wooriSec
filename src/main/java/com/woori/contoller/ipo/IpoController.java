@@ -19,7 +19,9 @@ import com.woori.service.ipo.IpoService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController // json 형태 결과값 반환 -> @Response가 필요x
 @RequestMapping("/ipo") // inquire의 API
 public class IpoController {
@@ -36,6 +38,7 @@ public class IpoController {
 
 	@GetMapping
 	public ResponseEntity<APIResponse<?>> getIpoById(@RequestParam(name="ipoId") Long ipoId){
+		log.info("요청 한 ipo :" + ipoId);
 		try {
 			IpoDetailDto dto = ipoService.getIpoById(ipoId);
 			return ResponseEntity.ok(APIResponse.success(dto));		
@@ -53,6 +56,7 @@ public class IpoController {
 	@GetMapping("/calendar")
 	public ResponseEntity<APIResponse<?>> getIpoSummary(@RequestParam(name = "yyyy") int year, 
 														@RequestParam(name = "mm") int month){
+		log.info("요청한 기간 :" + year +"-" +month);
 		
 		try {
 			List<CalenderResponseDto> dto = ipoService.getIpoSummary(year,month);
@@ -68,7 +72,7 @@ public class IpoController {
 	
 	@GetMapping("/list")
 	public ResponseEntity<APIResponse<?>> getAllIpo(@RequestParam(name = "index") int index){
-		
+		log.info("요청한 index :" + index);
 		try {
 			ListResponseDto dto = ipoService.getAllIpo(index);
 			return ResponseEntity.ok(APIResponse.success(dto));

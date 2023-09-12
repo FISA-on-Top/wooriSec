@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<configuration>
+    <property name="LOG_PATH" value="./logs"/>
+
+    <!-- Appenders : 콘솔창에 로그 기록 설정 -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%-5level] [%thread] %logger %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+
+    <!-- log 폴더 하위 파일에 로그 기록 출력 - 매우 간소화 한 test -->
+    <appender name="INFO_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <file>${LOG_PATH}/info.log</file>
+        <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/info_${type}.%d{yyyy-MM-dd}</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>  <!-- 파일에 출력되는 데이터 포멧 : %msg - 메소드의 prameter, %n:new line -->
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- Root Logger -->
+    <root level="INFO">  <!-- 로그 기록 레벨 변경시 수정하는 곳 DEBUG로 변경시 DEBUG 레벨부터 출력 -->
+        <appender-ref ref="console"/>
+        <appender-ref ref="INFO_LOG"/>
+    </root>
+</configuration>

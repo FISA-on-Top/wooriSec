@@ -1,4 +1,6 @@
-package com.woori.contoller.login;
+package com.woori.contoller.user;
+
+import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +18,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class LoginController {
@@ -35,6 +39,7 @@ public class LoginController {
 	@PostMapping("/loginauth")
 	public ResponseEntity<APIResponse<?>> login(@RequestBody LoginRequestDto user) {
 		
+		log.info("사용자 '{}가 로그인 시도한 시각: {}", user.getUserId(), LocalDateTime.now());
 		User u = userService.login(user);
 		
 		if(u == null) {
@@ -42,6 +47,7 @@ public class LoginController {
 		}
 		else {
 			LoginResponseDto dto = new LoginResponseDto(u.getUserId());
+			log.info("사용자 '{}'가 로그인 성공한 시각: {}", u.getUserId(), LocalDateTime.now());
 			return ResponseEntity.ok(APIResponse.success(dto));
 			
 		}
