@@ -4,7 +4,7 @@ server:
 spring:
  datasource:
    driver-class-name: com.mysql.cj.jdbc.Driver
-   url: jdbc:mysql://db-cluster-instance-1.ca5o3ouzfrpj.ap-northeast-2.rds.amazonaws.com/woori?characterEncoding=UTF-8
+   url: jdbc:mysql://db-cluster.cluster-ca5o3ouzfrpj.ap-northeast-2.rds.amazonaws.com/woori?characterEncoding=UTF-8
    username: root
    password: rootroot
  jpa:
